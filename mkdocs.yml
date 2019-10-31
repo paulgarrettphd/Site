@@ -1,6 +1,6 @@
 site_name: Paul M. Garrett
 docs_dir: docs
-repo_url: 'https://github.com/paulgarrettphd/GarrettSite.git'
+repo_url: 'https://github.com/paulgarrettphd/Site.git'
 repo_name: 'GitHub'
 
 theme:
