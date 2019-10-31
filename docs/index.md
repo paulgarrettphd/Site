@@ -1,17 +1,12 @@
-# Welcome to MkDocs
+<center> ![alt text](img/IntroImg.png) </center>
 
-For full documentation visit [mkdocs.org](https://mkdocs.org).
+# <b> Home </b>
 
-## Commands
+Paul Garrett is a PhD candidate at the University of Newcastle, Australia and a visiting academic at the University of Melbourne. Paul studies cognitive psychology and human decsion making from the perspectives of psychophysics, computational modelling and systems analysis. 
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs help` - Print this help message.
+During his PhD, Paul used R, Python and Matlab to develop mathematical tools and models to diagnose changes in the processing structure and efficiency of cognitive systems (e.g., the visual system). Paul has created educational materials for undergraduate and graduate students, teaching on topics including scientific writing, statistics, coding, professional development, and cognitive psychology. 
 
-## Project layout
+Paul is passionate about scientific communication, education and mentorship. He is a strong supporter of open science (data, code and publications), and aims to make his work and resources readily available to other scientists and the wider public. 
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+This site hosts and links academic materials that Paul has made to help other students and academics. These resources include presentations, teaching materials, code and papers.
+
