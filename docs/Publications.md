@@ -1,6 +1,8 @@
 <center> ![alt text](img/IntroImg.png) </center>
 
-# Peer Reviewed Articles
+# Publications
+
+## <b> Peer Reviewed Articles </b>
 
 **Garrett P. M.**, Chiam, P-Y., & Yang, C-T. (In prep). Visual word processing efficiency for Chinese characters and English words.
 
@@ -25,7 +27,7 @@ Little, D. R., Eidels, A., Houpt, J. W., **Garrett P. M.**, & Griffiths, D. W. (
 Cooper, P.S., **Garrett P.M.**, Rennie J.L. & Karayanidis F. (2015) [Task Uncertainty Can Account for Mixing and Switch Costs in Task-Switching](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0131556). *PLoS ONE*. 10(6).
 
 
-# Peer Reviewed Conference Proceedings
+## <b> Peer Reviewed Conference Proceedings </b>
 
 Dennis, S., **Garrett, P.M.**, Yim, H., Hamm, J., Osth, A., Sreekumar, V., & Stone, B. (2019). Privacy versus Open Science. In Goel, A., Seifert, C., & Freksa, C. (Eds.) *Proceedings of the 41st Annual Conference of the Cognitive Science Society*. Austin, TX: Cognitive Science Society.
 
@@ -35,20 +37,18 @@ Dennis, S., Yim, H., Sreekumar, V., Evans. N., **Garrett, P.M.**, & Sederberg, P
 
 Tillman, G., Howard, Z., **Garrett, P.M.**, & Eidels, A. (2017). [The Stroop Effect From a Mixture of Reading Processes: A Fixed-Point Analysis](https://mindmodeling.org/cogsci2017/papers/0630/paper0630.pdf). *Proceedings of the 39th Annual Conference of the Cognitive Science Society*.
 
-## Presentations
+## <b> Presentations </b>
 ### Conference Presentations
-
-
 
 **Garrett, P. M.**, Howard, Z., Houpt, J. W., Landy, D., & Eidles, A. (2019). The comparison of large and small item-sets. The annual meeting of the Australian mathematical society, Melbourne.
 
-**Garrett, P. M.**, Howard, Z., Houpt, J. W., Landy, D., & Eidles, A. (2018). Estimating multiple item-sets: Harder than you think! Sydney Postgraduate Psychology Conference, University of New South Wales.
+**Garrett, P. M.**, Howard, Z., Houpt, J. W., Landy, D., & Eidles, A. (2018). [Estimating multiple item-sets: Harder than you think!](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/SPPC%20-%20Estimating%20Multiple%20Item-Sets.pptx) Sydney Postgraduate Psychology Conference, University of New South Wales. ***Winning presentation.***
 
 **Garrett, P. M.**, Yim, H., Sreekumar, V., Evans, N., & Dennis, S. (2018). A model for `When' in memory. Hunter medical research institute post-graduate conference, Newcastle.
 
-**Garrett, P. M.**, Yim, H., Sreekumar, V., Evans, N., & Dennis, S. (2018). A predictive model for `When' in human memory. Experimental Psychology Conference, Hobart.
+**Garrett, P. M.**, Yim, H., Sreekumar, V., Evans, N., & Dennis, S. (2018). [A predictive model for `When' in human memory.](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/A%20predictive%20model%20for%20when.pptx) Experimental Psychology Conference, Hobart.
 
-**Garrett, P. M.**, Houpt, J., Landy, D., & Eidels, A. (2017). Curve your enthusiasm: advancements in systems of estimation. School of Psychology, The University of Melbourne, Australia.
+**Garrett, P. M.**, Houpt, J., Landy, D., & Eidels, A. (2017). [Curve your enthusiasm: advancements in systems of estimation.](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/CurveYourEnthusiasm.pptx) School of Psychology, The University of Melbourne, Australia.
 
 **Garrett, P. M.**, Waters, L.A., & Eidels, A. (2017). How many jelly beans in two jars? Hunter medical research institute post-graduate conference, Newcastle.
 
@@ -58,24 +58,27 @@ Tillman, G., Howard, Z., **Garrett, P.M.**, & Eidels, A. (2017). [The Stroop Eff
 
 **Garrett, P. M.**, Houpt, J., Landy, D., & Eidels, A. (2016). Assessing systems of enumeration with SFT (Seminar). School of Psychology, Indiana University, Bloomington.
 
-**Garrett, P. M.**, Thorpe, A., & Eidels, A. (2016). Are you being `Serial'? Parallel vs Serial systems of enumeration. Hunter medical research institute post-graduate conference, Newcastle.
+**Garrett, P. M.**, Thorpe, A., & Eidels, A. (2016). [How do you count?](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/HowDoYouCount.pptx) Hunter medical research institute post-graduate conference, Newcastle.
 
-**Garrett, P. M.**, & Eidels, A. (2016). A new method for assessing systems of enumeration. The annual meeting of the Australian mathematical society, Hobart. 
+**Garrett, P. M.**, & Eidels, A. (2016). [A new method for assessing systems of enumeration.](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/Cognitive%20Processing%20Systems%20of%20Enumeration.pptx) The annual meeting of the Australian mathematical society, Hobart. 
 
 ### Workshops
 
-**Garrett, P.M.** (2019). The PhD and beyond! Pathways into and out of academia. Graduate researchers in psychological sciences workshop. University of Melbourne.
+**Garrett, P.M.** (2019). [The PhD and beyond! Pathways into and out of academia. Graduate researchers in psychological sciences workshop.](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/PhDandBeyond.pptx) University of Melbourne.
+
+**Garrett, P.M.** (2018). [Claims of causality in health news.](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/Claims%20of%20causality%20in%20health%20news.pptx) Decision making laboratory, University of Melbourne.
 
 **Garrett, P.M.** (2018). Mathematics in Cognitive Psychology. Computer-Assisted Research Mathematics and its Applications (CARMA): mathematical thinking workshop, Newcastle.
 
+
 ### Conference Posters
 
-**Garrett, P. M.**, Waters, L., Landy, D., Houpt, J., & Eidels, A. (2018) How many jelly beans in two jars? Evidence for the parallel estimation of two quantities. Hunter medical research institute conference for graduate researchers.
+**Garrett, P. M.**, Waters, L., Landy, D., Houpt, J., & Eidels, A. (2018) [How many jelly beans in two jars? Evidence for the parallel estimation of two quantities.](https://github.com/paulgarrettphd/Site/raw/master/presentations/posters/JellyBeans.pptx) Hunter medical research institute conference for graduate researchers.
 
-**Garrett, P. M.**, Thorpe, A., Landy, D., Houpt, J., & Eidels, A. (2017) A new approach to understanding systems of subitizing - the comparison of small quantities. Experimental psychology conference, Newcastle.
+**Garrett, P. M.**, Thorpe, A., Landy, D., Houpt, J., & Eidels, A. (2017) [A new approach to understanding systems of subitizing - the comparison of small quantities.](https://github.com/paulgarrettphd/Site/raw/master/presentations/posters/SystemsOfSubitizing.pptx) Experimental psychology conference, Newcastle.
 
-**Garrett, P. M.**, Thorpe, A., Landy, D., Houpt, J., & Eidels, A. (2016). How do you count? Cognitive processing systems of enumeration. 57th annual meeting of the Psychonomics Society, Boston.
+**Garrett, P. M.**, Thorpe, A., Landy, D., Houpt, J., & Eidels, A. (2016). [How do you count? Cognitive processing systems of enumeration.](https://github.com/paulgarrettphd/Site/raw/master/presentations/posters/How%20do%20you%20count.pptx) 57th annual meeting of the Psychonomics Society, Boston.
 
-**Garrett, P. M.**, Cooper, P., & Karayanidis, F. (2014). Using cognitive control to resolve information context predicts both global and local switch costs. Hunter medical research institute graduate researchers in Psychology conference.
+**Garrett, P. M.**, Cooper, P., & Karayanidis, F. (2014). [Using cognitive control to resolve information context predicts both global and local switch costs.](https://github.com/paulgarrettphd/Site/raw/master/presentations/posters/Uncertainty.pptx) Hunter medical research institute graduate researchers in Psychology conference.
 
-**Garrett, P. M.**, Cooper, P., & Karayanidis, F. (2014). Mid-frontal theta: a measure of attentional processes indexed during cognitive control. Hunter medical research institute satellite conference for the Australian Cognitive Neuroscience Society.
+**Garrett, P. M.**, Cooper, P., & Karayanidis, F. (2014). [Mid-frontal theta: a measure of attentional processes indexed during cognitive control.](https://github.com/paulgarrettphd/Site/raw/master/presentations/posters/Mid%20Frontal%20Theta.pptx) Hunter medical research institute satellite conference for the Australian Cognitive Neuroscience Society.
