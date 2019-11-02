@@ -2,14 +2,27 @@
 
 
 # Educational Materials 
+Like many scientists and teachers, I have created various teaching materials --- code, presentations, guides, examples --- during my PhD tenure. Often, the many hours that go into these works are lost to personal hard-drives or deleted all together. Rather than waste this content, I have collated this material on my [GitHub](https://github.com/paulgarrettphd/Site/tree/master/presentations/studenteducation) and have begun to provide links and descriptions of this content on this site. Below, I provide descriptions and downloadable links for educational content targeted at undergraduate psychology students. Topics include scientific writing, statistics, APA figures and learning the basics of Matlab. Feel free to download and share this content: it was made to help others.
 
-## Statistics and report writing
+
+## Scientific writing
+
+### Statistics
+Statistics can be difficult at the best of times. Often students progress quickly though statistical content with the aim of passing a single exam (e.g., run a t-test, ANOVA or ANCOVA). These tests are made simple in statistical programs such as SPSS, JASP or JAMOVI; however, students regularly forget the basics. For this reason, I created a simple crash course on understanding elements of basic statistics. This crash-course has helped numerous undergraduate psychology students quickly catch-up on simple (but critical) concepts in statistics, from students in first up to fourth year. Follow these links for a quick [crash course on basic stats](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/Basic%20Stat%20with%20Paul.pptx), and [an excel walk-through on central measures](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/CentralMeasures_Practice.xlsx); hopefully, you'll know it all anyway! 
 
 
+### Report writing
+Report writing is a critical skill for undergraduate scientists. Although these skills are needed to excel at many undergraduate courses, these skills are often not taught to students. During my time as a 2000/3000 level Psychology tutor, and as part of my private tutoring work in scientific methodology and design, I created a simple and clear walk-through. This tutorial covers the scientific method, report writing (what to include, where and why!), understanding and reporting statistical results (including interactions within two-way ANOVAs and simple effects), and an overview on how to write better (at an undergraduate level). Importantly, clear examples are given at every step so you can make the most of each section. Download this tutorial on [Report writing with Paul](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/ReportWriting.pptx). 
+
+During my time as a tutor, I often found that student's lacked an example of what they should aim to achieve and what markers might be looking for. Of course, some excellent students will go above-and-beyond to create a perfect report (and kudos to them!) But a benchmark example should be always be clearly established for students aiming to pass or receive a credit. This is especially important for students writing their very first 500 word report. To this end, I created a small example report with comments and feedback. The report isn't perfect, however, compliments the structure detailed in the above report-writing tutorial. If you are new to scientific report writing and want a simple example to work towards, this [example report](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/Good%20Example%20Report%20with%20Comments.docx) was made for you. 
+
+
+### APA figures 
+Making clear, accurate APA style figures is an important skill in psychology. Although graduate students (PhD, Masters) often plot figures in programs such as Python, Matlab or R, undergraduate students often plot such figures in Excel. APA figures are simple to make, however, require several steps in Excel to get right. To make this process easier, students may download this simple [APA Plotting Walk-Though](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/APAGraphGenerator_Practice.xls) for creating APA-style figures in Excel (example provided below). 
+<center> ![alt text](img/educationalmaterials/APAfigure.png) </center>
 
 ## Matlab Basics
-
-Matlab is a popular coding language used in a range of fields including engineering, mathematics and cognitive psychology. Leaning Matlab for a first-time programmer can be difficult; there are many new terms, concepts, and data types to learn. As part of my PhD, I had the fortune to teach Matlab to several undergraduate students and developed a series of Matlab lessons over this time targeted at cognitive psychologists. These lessons cover the following (downloadable) Matlab topics: [the basics], [matrix manipulation], functions, and plotting (functions and plotting tba). The code for these lessons are provided below, made easy to navigate with a handy table of contents.
+Matlab is a popular coding language used in a range of fields including engineering, mathematics and cognitive psychology. Leaning Matlab for a first-time programmer can be difficult; there are many new terms, concepts, and data types to learn. As part of my PhD, I had the fortune to teach Matlab to several undergraduate students and developed a series of Matlab lessons over this time targeted at cognitive psychologists. These lessons cover the following (downloadable) Matlab topics: [the basics](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/Matlab/TheBasics.m), [matrix manipulation](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/Matlab/Matrices.m), functions, and plotting (functions and plotting tba). The code for these lessons are provided below and can be navigated through the table of contents.
 
 ### Starting a script
 
