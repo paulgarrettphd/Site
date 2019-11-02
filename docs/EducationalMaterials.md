@@ -2,7 +2,7 @@
 
 
 # Educational Materials 
-Like many scientists and teachers, I have created various teaching materials --- code, presentations, guides, examples --- during my PhD tenure. Often, the many hours that go into these works are lost to personal hard-drives or deleted all together. Rather than waste this content, I have collated this material on my [GitHub](https://github.com/paulgarrettphd/Site/tree/master/presentations/studenteducation) and have begun to provide links and descriptions of this content on this site. Below, I provide descriptions and downloadable links for educational content targeted at undergraduate psychology students. Topics include scientific writing, statistics, APA figures and learning the basics of Matlab. Feel free to download and share this content: it was made to help others.
+Like many graduate researchers, I have created various teaching materials during my PhD, for example, code, presentations, and guides. Often, the many hours sunk into these works are lost to personal hard-drives or the trash-bin. Rather than waste this content, I aim to collate this material on my [GitHub](https://github.com/paulgarrettphd/Site/tree/master/presentations/studenteducation) and have begun to provide links and descriptions for all of my content on this site. Below, I provide descriptions and downloadable links for educational content targeted at undergraduate psychology students. Topics include scientific writing, statistics, APA figures, and learning the basics of Matlab. Feel free to download and share: it was made to help others.
 
 
 ## Scientific writing
