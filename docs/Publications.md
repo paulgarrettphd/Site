@@ -1,3 +1,4 @@
+<center> ![alt text](img/IntroImg.png) </center>
 
 # Peer Reviewed Articles
 
@@ -47,7 +48,7 @@ Tillman, G., Howard, Z., **Garrett, P.M.**, & Eidels, A. (2017). [The Stroop Eff
 
 **Garrett, P. M.**, Yim, H., Sreekumar, V., Evans, N., & Dennis, S. (2018). A predictive model for `When' in human memory. Experimental Psychology Conference, Hobart.
 
-**Garrett, P. M.**, Houpt, J., Landy, D., & Eidels, A. (2018). Behavioural measures of numerical cognition. School of Psychology, The University of Melbourne, Australia.
+**Garrett, P. M.**, Houpt, J., Landy, D., & Eidels, A. (2017). Curve your enthusiasm: advancements in systems of estimation. School of Psychology, The University of Melbourne, Australia.
 
 **Garrett, P. M.**, Waters, L.A., & Eidels, A. (2017). How many jelly beans in two jars? Hunter medical research institute post-graduate conference, Newcastle.
 
@@ -68,3 +69,13 @@ Tillman, G., Howard, Z., **Garrett, P.M.**, & Eidels, A. (2017). [The Stroop Eff
 **Garrett, P.M.** (2018). Mathematics in Cognitive Psychology. Computer-Assisted Research Mathematics and its Applications (CARMA): mathematical thinking workshop, Newcastle.
 
 ### Conference Posters
+
+**Garrett, P. M.**, Waters, L., Landy, D., Houpt, J., & Eidels, A. (2018) How many jelly beans in two jars? Evidence for the parallel estimation of two quantities. Hunter medical research institute conference for graduate researchers.
+
+**Garrett, P. M.**, Thorpe, A., Landy, D., Houpt, J., & Eidels, A. (2017) A new approach to understanding systems of subitizing - the comparison of small quantities. Experimental psychology conference, Newcastle.
+
+**Garrett, P. M.**, Thorpe, A., Landy, D., Houpt, J., & Eidels, A. (2016). How do you count? Cognitive processing systems of enumeration. 57th annual meeting of the Psychonomics Society, Boston.
+
+**Garrett, P. M.**, Cooper, P., & Karayanidis, F. (2014). Using cognitive control to resolve information context predicts both global and local switch costs. Hunter medical research institute graduate researchers in Psychology conference.
+
+**Garrett, P. M.**, Cooper, P., & Karayanidis, F. (2014). Mid-frontal theta: a measure of attentional processes indexed during cognitive control. Hunter medical research institute satellite conference for the Australian Cognitive Neuroscience Society.
