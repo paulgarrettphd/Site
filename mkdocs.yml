@@ -21,6 +21,7 @@ theme:
 
 nav:
   - Home: index.md
+  - Academic Projects: Projects.md
   #- About Me: About me.md
   - Edu Materials - Writing: EducationalMaterialsWriting.md
   - Edu Materials - Coding:  EducationalMaterialsCode.md
