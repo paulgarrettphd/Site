@@ -5,6 +5,7 @@ repo_name: 'GitHub'
 
 theme:
   name: material
+  #custom_dir: theme
   site_favicon: img/faveicon.ico
   logo:
     icon: face
@@ -16,9 +17,13 @@ theme:
     code: Roboto Mono
   feature:
     tabs: true
+  #extra_css: stylesheets/extra.css
 
 nav:
   - Home: index.md
-  - About Me: About me.md
+  - Academic Projects: Projects.md
+  - Edu Materials - Writing: EducationalMaterialsWriting.md
+  - Edu Materials - Coding:  EducationalMaterialsCode.md
+  - Systems Factorial Technology: SFT.md
   - Publications: Publications.md
   - Contact Me: Contactme.md

@@ -10,3 +10,5 @@ Paul is passionate about scientific communication, education and mentorship. He 
 
 This site hosts and links academic materials that Paul has made to help other students and academics. These resources include presentations, teaching materials, code and papers.
 
+To contact Paul please email paulgarrett2016@gmail.com or find him on twitter [@PaulMGarrett](https://twitter.com/PaulMGarrett)
+To see his latest work, check his [Google Scholar profile](https://scholar.google.com/citations?user=C2VNls8AAAAJ&hl=en) or find him at [Research Gate](https://www.researchgate.net/profile/Paul_Garrett8). 

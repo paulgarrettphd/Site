@@ -1,7 +1,7 @@
 % Paul Garrett
 % 16/04/2019 21:49:29
 % Purpose: Teach basic concepts of programming in Matlab to >= 4th year
-% psych students. Lesson one of appx six. 
+% psychology students.
 
 %% Lesson One - The Basics.
 % Outline
