@@ -1,0 +1,102 @@
+Journal Club Notes.
+
+Host: Deborah Lin, Visual and Decision Laboratory, University of Melbourne.
+
+Decomposing the effects of context valence and feedback information on speed and accuracy during reinforcement learning: a meta-analytical approach using diffusion decision modeling
+Laura Fontanesi, Stefano Palminteri, & Ma¨el Lebreton
+Cognitive, Affective & Behavioral Neuroscience (2019) 19:490–502
+https://doi.org/10.3758/s13415-019-00723-1
+
+Reinforcement learning (RL) models describe how humans and animals learn by trial-and-error to select actions that maximize rewards and minimize punishments. Traditional RL models focus exclusively on choices, thereby ignoring the interactions between choice preference and response time (RT), or how these interactions are influenced by contextual factors. However, in the field of perceptual decision-making, such interactions have proven to be important to dissociate between different underlying cognitive processes. Here, we investigated such interactions to shed new light on overlooked differences between learning to seek rewards and learning to avoid losses. We leveraged behavioral data from four RL experiments, which feature manipulations of two factors: outcome valence (gains vs. losses) and feedback information (partial vs. complete feedback). A Bayesian meta-analysis revealed that these contextual factors differently affect RTs and accuracy: While valence only affects RTs, feedback information affects both RTs and accuracy. To dissociate between the latent cognitive processes, we jointly fitted choices and RTs across all experiments with a Bayesian, hierarchical diffusion decision model (DDM). We found that the feedback manipulation affected drift rate, threshold, and non-decision time, suggesting that it was not a mere difficulty effect. Moreover, valence affected non-decision time and threshold, suggesting a motor inhibition in punishing contexts. To better understand the learning dynamics, we finally fitted a combination of RL and DDM (RLDDM). We found that while the threshold was modulated by trial-specific decision conflict, the non-decision time was modulated by the learned context valence. Overall, our results illustrate the benefits of jointly modeling RTs and choice data during RL, to reveal subtle mechanistic differences underlying decisions in different learning contexts.
+
+
+Key Point Summary.
+- Reinforcement learning (RL) models describe how humans and animals learn by trial-and-error to select actions that maximize rewards and minimize punishments.
+- Traditional RL models focus upon the choice outcome, ignoring the decisional response-time and the interaction this has with choice preferences.
+- Current experiment manipualted two factors: outcome valence (gain vs loss) and feedback (partial vs complete).
+- Baesian meta-analysis revealed that contextual factors differently affect RTs and accuracy.
+	- Valence only affects RTs
+	- Feedback affects RT and accuracy
+- Joint fit of Choice and RT with Bayesian hierarchical diffusion decision model (DDMO).
+	- Feedback affected drift-rate, threshold and t0 - ergo, not just difficulty (threshold)
+	- Valence affected t0 and threshold - ergo, motor inhibition for punishing contexts
+- Joint fit of RL and DDM
+	- Decision conflict affected threshold     - uncertainty.
+	- Context valence (gain vs loss) affect t0 - loss aversion.
+- Paper concludes with benifits of RLDDM models for assessing subtle mechanistic differences in the decisions underlying learning contexts.
+
+Notes by Paul
+ - Really like the Bayesian Cedible Interval shading on Figure 1.c and 1.d; very illustrative and clear. Will try to replicate for my own work.
+ - The task is simple, clean and clear; the analysis descriptive and well presented; the paper worth reading and a substantial contribution to reinforcement learning and DDM literature.
+
+
+
+Notes by Deb
+Uses learning princles to inform the RL component and decision principles to inform the DDM component.
+Difficulty and magnitude effects on response-times
+Investigating how context valence and feedbakc affects Reinforcement learning
+- Building on Palminteri et al (2015, 2016, 2017) studies
+- Partial vs Complete feedback, and Gain vs Loss
+- Palmenteri studies - accuracy was higher in complete feedback, and learn to equally seek rewards and avoid punishments
+  - there were RT effects in these conditions, however, these were not modelled
+- To model this, they fit the RL model with a diffusion front-end
+- Four exp's, three labs from London and France
+	- Eight cues, on a trial 2 persented
+	- 2 x 2 factorial design
+	- RT longer in the punishement conditions but not by much (fig 2a)
+	- Effect of response-window 
+
+In the RELATIVE model, at each trial t , the option
+values Q in the current context s are updated with the
+Rescorla–Wagner rule (Rescorla & Wagner, 1972):
+Qc,s,t = Qc,s,t-1 + ac · dc
+Qu,s,t = Qu,s,t-1 + au · du
+
+where ac is the learning rate for the chosen option Qc—
+updated in both partial and complete feedback contexts—
+and au the learning rate for the unchosen option Qu—
+updated only in complete feedback contexts. dc and du are
+prediction error terms, calculated as follows:
+dc = Rc,s,t - Vs,t-1 - Qc,s,t-1
+du = Ru,s,t - Vs,t-1 - Qu,s,t-1 (3)
+Vs represents the context value that is used as the reference
+point for the updating of option values in a particular
+context, and R is the feedback received in a trial. Context
+value is also learned via a delta rule:
+Vs,t = Vs,t-1 + aV · dV
+
+where aV is the learning rate of context value and dV is a
+prediction error term. In complete feedback contexts:
+dV = (Rc,s,t + Ru,s,t )
+2
+- Vs,t-1 (5)
+In partial feedback contexts, since Rc,s,t is not provided, its
+value is replaced by its expected value Qu,s,t , hence:
+dV = (Rc,s,t + Qu,s,t )
+2
+- Vs,t-1 (6)
+
+
+
+
+
+
+
+
+ Confidence Intervals vs Bayesian Highest Density Intervals
+https://stats.stackexchange.com/questions/184163/what-can-we-conclude-from-a-bayesian-credible-interval
+https://stats.stackexchange.com/questions/26450/why-does-a-95-confidence-interval-ci-not-imply-a-95-chance-of-containing-the
+
+
+
+
+Future Topics
+Gender bias in artificial intelligence
+https://medium.com/@robert.munro/bias-in-ai-3ea569f79d6a
+Gender and race biases in artificial intelligence
+https://towardsdatascience.com/https-medium-com-mauriziosantamicone-is-artificial-intelligence-racist-66ea8f67c7de
+See also, journal artical 
+https://www.ncbi.nlm.nih.gov/pubmed/28408601
+
+Jim Morer - NZ Radio - Simon Lilburn Signal Deteciton Theory. 
+
