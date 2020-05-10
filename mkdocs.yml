@@ -7,8 +7,8 @@ theme:
   name: material
   #custom_dir: theme
   site_favicon: img/faveicon.ico
-  logo:
-    icon: face
+  #logo:
+  #  icon: face
   palette:
     primary: blue
     accent: blue
