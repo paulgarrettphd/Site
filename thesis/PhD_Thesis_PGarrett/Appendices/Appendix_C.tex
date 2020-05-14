@@ -1,0 +1,133 @@
+\chapter{Supplementary Materials S3: \\ Mixture processing models}
+\label{Appendix:C_MixtureModels}
+\lhead{Supplementary S3. \emph{Mixture Models}}
+
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{section}{0}
+\renewcommand\thefigure{S3\thesection.\arabic{figure}}
+\renewcommand\thetable{S3\thesection.\arabic{table}}
+
+\noindent The materials in this supplementary chapter are relevant to Chapter 5 of the submitted thesis.
+
+\newpage
+
+The following presents the analytic proofs used in the simulation of Poisson processing models, mixture models, mixture SICs and mixture capacity coefficients. The poofs herein will be described in terms of their application to the Poisson accumulator. Where appropriate we subscript the numerals 1 and 2 to indicate to which of the two channel components of the models we are referring. We superscript the model predictions with $s$, $p$, or $c$ to indicate reference to the serial, parallel, or coactive models, respectively. An additional superscript $st$ or $ex$ may be added to indicate self-termination or exhaustive processing, respectively. 
+
+\section{Model simulation - Poisson accumulator}
+We simulated predictions for each of the independent channels of the serial and parallel models and the coactive model using pairs of Poisson accumulators. The number of accumulated counts is distributed as a Poisson random variable with a rate parameter $\lambda$:
+
+
+\begin{equation} \tag{1}
+P(U(t) = u | \lambda t) = 
+\left\{ \begin{array}{lr} 
+  \frac{(\lambda t)^u e^{-\lambda t}}{u!}, & t \ge 0  \\
+  0 & t < 0
+\end{array}
+\right.
+\label{eq:poisspdf}
+\end{equation}
+The processing time of a channel is the time it takes to reach  a threshold number of counts, $a$. Thus, the processing time for an independent channel has an Erlang distribution, 
+
+\begin{align}
+f(t) &= \frac{\lambda^a t^{a-1} \exp\left(-\lambda t\right)}{(a-1)!}\\
+F(t) &= 1-  \sum_{k=0}^{a-1} \frac{\exp(-\lambda t)(\lambda t)^k}{k!}.
+\end{align}
+
+\subsection{Parallel self-terminating model} The survivor function predictions of the parallel self-terminating model were computed from Poisson distributions of each independent stimulus channels as:
+\begin{equation} \tag{4}
+	S^{Pst}_{12}(t) = S_1(t) \times S_2(t).
+    \label{eq:parst}
+\end{equation}
+\noindent
+In the case where only one channel carries the target information and allows for self-termination, under the assumption of stochastic independence, the parallel self-terminating processing time is determine solely by the target channel. 
+
+\subsection{Serial self-terminating model} Serial self-terminating predictions were computed as:
+\begin{equation} \tag{5a}
+	f^{Sst}_{12}(t) = P(1,2) f_1(t) + [1-P(1,2)] f_2(t)
+    \label{eq:serst}
+\end{equation}
+\noindent
+where $P(1,2)$ is the probability that channel $1$ is processed before channel $2$. 
+
+We are also interested in cases in which one dimension allowed for self-termination but the other dimension did not (in which case, both dimensions needed to be processed). In this case, the density function is:
+\begin{equation} \tag{5b}
+	f^{Sst}_{12}(t) = P(1,2) f_1(t) + [1-P(1,2)] (f_2(t) * f_1(t))
+	%f^{Sst}_{12}(t) = p f_1(t) + [1-p] (f_2(t) * f_1(t)).
+    \label{eq:serstmixed}
+\end{equation}
+Here, $*$ refers to the convolution operation.  This captures the assumption that channel 1 still needs to be processed when channel 2 is processed first.\footnote{The type of serial model adopted for the simulations below depended on the task context to which the measure applies. In an OR task, where redundant processing is possible, then the two formulations of the serial self-terminating model are identical in their predictions. Hence, for the SIC$_{OR}$($t$) and C$_{OR}$($t$) simulations, we utilized Equation 9a. For the remaining simulations, we use the exhaustive formulations.}.
+
+\subsection{Parallel exhaustive model} 
+The cdf predictions for the parallel exhaustive model were computed from the Poisson distributions as:
+\begin{equation} \tag{6}
+	F^{Pex}_{12}(t) = F_1(t) \times F_2(t).
+    \label{eq:parex}
+\end{equation}
+\noindent
+
+
+\subsection{Serial exhaustive model} The predictions for the serial exhaustive model were computed as:
+\begin{equation} \tag{7}
+	f^{Sex}_{12}(t) = f_1(t) *  f_2(t).
+    \label{eq:serex}
+\end{equation}
+
+\subsection{Coactive model} 
+To simulate a coactive processing model, we assumed that there was complete cross-talk between the processing channels. Following \citeauthor{Johnson2010b} (2010), we defined a model over the $a_1 \times a_2$ state space, where $a_i$ is the criterion for channel $i$ (i.e., the number of accumulated counts needed before the channel can terminate). The probability that a single count was shared from channel $j$ to channel $i$ was defined as $p_{ji} $. The total amount of shared information was distributed as a binomial random variable. We utilized the analytic expression shown in \citeauthor{Johnson2010b} (their Appendix A.1) for the facilitatory parallel model with $p_{ji} = p_{ij} = 1$ for the coactive processing model. 
+This model is equivalent to a single Poisson accumulator channel with $\lambda_{12} = \lambda_1 + \lambda_2$ and $a_{12} = \max(a_1, a_1)$ or $\min(a_1, a_2)$ depending on the stopping rule. 
+
+\subsection{Mixture models} Along with the coactive model, equations \ref{eq:parst}-\ref{eq:serex} provide a formal description of the pure, non-mixture models. The mixture models were computed as additive mixtures of each of these components:
+\begin{align} \tag{8}
+\begin{split}
+	f^{Mix OR}_{Pst/C}(t) &= p f^{Pst}(t) + [1-p] f^{C}(t)\\
+    %\label{eq:mixcp}\\
+    f^{Mix OR}_{Pst/Sst}(t) &= p f^{Pst}(t) + [1-p] f^{Sst}(t) \\
+    %\label{eq:mixsp}
+    f^{Mix AND}_{Pex/C}(t) &= p f^{Pex}(t) + [1-p] f^{C}(t)\\
+    %\label{eq:mixcp}\\
+    f^{Mix AND}_{Pex/Sex}(t) &= p f^{Pex}(t) + [1-p] f^{Sex}(t) \\
+    \label{eq:mixtures}
+\end{split}
+\end{align}
+\noindent
+where $p$ is the probability that the mixture model uses a parallel process, and $1-p$ is the probability that the mixture uses another process, coactive or serial (Equation~\ref{eq:mixtures}). \footnote{We omitted the combination of serial and coactive because the results indicated that a mixture of serial and coactive processing would exhibit the same smooth mixture between a pure serial and pure coactive model as the other mixture models.}
+
+\subsection{Capacity predictions} 
+The capacity functions for mixture models follow a relatively complicated trade-off as a function of $p$.  To determine an analytical prediction, we first note that the mixture of densities implies the mixture of CDFs,
+\begin{equation}\label{eq:Fmix} \tag{9}
+F^{mix} = \int f^{mix} = \int pf^{(1)} + (1-p)f^{(2)} = p\int f^{(1)} + (1-p) \int f^{(2)} = pF^{(1)} + (1-p)F^{(2)}.
+\end{equation}
+Likewise, because $S=1-F$, 
+\begin{align}
+S^{mix} 
+&= 1-F^{mix} \nonumber \\
+&= 1-(pF^{(1)} + (1-p)F^{(2)}) \nonumber \\
+&= 1-pF^{(1)} -F^{(2)} +pF^{(2)} \nonumber \\
+&= p -p + 1-pF^{(1)} -F^{(2)} +pF^{(2)} \nonumber \\
+&= p(1-F^{(1)}) -p + 1 -F^{(2)} +pF^{(2)} \nonumber \\
+&= p(1-F^{(1)}) +(1-p)(1-F^{(2)}) \nonumber \\ 
+&= pS^{(1)} +(1-p)S^{(2)}. \nonumber
+\end{align}
+
+By substituting the mixture survivor functions and CDFs into Equations~\ref{eq:Cor} and~\ref{eq:Cand} respectively, we arrive at:
+
+\begin{align} \tag{10} \label{eq:CtMix}
+    C_{OR}(t)^{mix} = \frac{\log\left[pS^{(1)}_{12} + (1-p)S^{(2)}_{12}\right]}{\log\left[pS^{(1)}_{1} + (1-p)S^{(2)}_{1}\right] + \log\left[pS^{(1)}_{2} + (1-p)S^{(2)}_{2}\right]}\\[15pt]
+    C_{AND}(t)^{mix} = \frac{\log\left[pF^{(1)}_{1} + (1-p)F^{(2)}_{1}\right] + \log\left[pF^{(1)}_{2} + (1-p)F^{(2)}_{2}\right]}{\log\left[pF^{(1)}_{12} + (1-p)F^{(2)}_{12}\right]} \nonumber
+\end{align}
+
+The capacity predictions for two kinds of mixture models, parallel processing coupled with either serial or coactive processes, for both the OR and AND case, are shown in Figure~\ref{fig:Ch5_CapPoisson}. For the coactive/parallel mixture model, as $p$ increases from 0 to 1, the predictions clearly reflect a smooth transition from the unlimited capacity parallel model predictions to the supercapacity coactive model predictions. Conversely, for the parallel/serial mixture model, the capacity predictions move smoothly from unlimited to limited capacity. 
+
+\subsection{SIC predictions} 
+The SIC predictions for a mixture model are relatively straightforward to determine analytically.  
+Substituting Equation~\ref{eq:Fmix} into the SIC, we find the SIC for a mixture is a mixture of the SICs.
+
+\begin{align*} \tag{11} \label{eq:SICmix}
+    \rm{SIC}(t)^{mix} =& \left[\left[p\SLL^{(1)}(t)+(1-p)\SLL^{(2)}(t)\right]-\left[p\SLH^{(1)}(t)+(1-p)\SLH^{(2)}(t)\right]\right] \\
+    &-\left[\left[p\SHL^{(1)}(t)+(1-p)\SHL^{(2)}(t)\right]-\left[p\SHH^{(1)}(t)+(1-p)\SHH^{(2)}(t)\right]\right]\\
+    =&  p\left[\left[\SLL^{(1)}(t)-\SLH^{(1)}(t)\right] -  \left[\SHL^{(1)}(t)-\SHH^{(1)}(t)\right]\right] \\
+    &+ (1-p)\left[\left[\SLL^{(2)}(t)-\SLH^{(2)}(t)\right] - \left[\SHL^{(2)}(t)\SHH^{(2)}(t)\right]\right] \\
+    =& p\rm{SIC}(t)^{(1)}  + (1-p)\rm{SIC}(t)^{(2)}.
+\end{align*}

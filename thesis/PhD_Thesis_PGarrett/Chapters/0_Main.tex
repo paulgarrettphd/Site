@@ -1,0 +1,433 @@
+% Paul M. Garrett Thesis 2019
+% Chapters
+% 1 -- Introduction to Numbers
+% 2 -- Estimation, SFT and NDE
+        % - Estimation
+        % - Cognitive Properties
+        % - SFT
+        % - Pilot Studies 1 & 2
+        % - Results
+        % - Discussion
+% 3 -- Estimation Systems
+        % - Method - Estimation with SFT
+        % - Results - Heir MIC and Bayes SIC
+        % - Discussion
+% 4 -- Subitizing Systems
+        % - Subitizing
+        % - Method
+        % - Results
+        % - Discussion
+% 5 -- Mixture Models of Parallel vs Serial
+        % Theory
+        % Simulation
+        % Discussion
+% 6 -- Symbolic Wheel Task
+        % Ideal Observer Analysis
+        % Method
+        % Results
+        % Discussion
+% 7 -- Cross Cultural Wheel Task
+        % Dots - Intro to Symbolic Numbers
+        % English, Chinese & Thai - Digits vs Dots
+        % Understanding Number <--> Perception of Number
+        % Multidimensional Scaling
+            % Bias
+            % Luce Choice Model
+            % Unbias MDS
+        % Method - Wheel Task
+        % English Cohort - Results
+        % Chinese Cohort - Results
+        % Discussion
+% 8 -- General Discussion 
+    % - Discussion of Numbers & Quantity 
+    % - Implications of PhD Work
+    % - Future Research
+    % - Conclusions
+
+\documentclass[12pt,oneside]{Thesis}
+\graphicspath{{}}
+
+\usepackage{epigraph}
+\setlength\epigraphwidth{.5\textwidth}
+\usepackage{indentfirst}
+\usepackage{apacite}
+\usepackage{tipa}
+\usepackage[english]{babel}
+\usepackage{booktabs}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage[colorinlistoftodos]{todonotes} 
+\hypersetup{urlcolor=black, colorlinks=true} 
+\usepackage{parskip}
+\usepackage[utf8]{inputenc}
+\usepackage{hhline}
+\usepackage{hyperref}
+
+\usepackage{CJKutf8}
+\usepackage{lineno} 
+\usepackage{float}
+\usepackage{longtable}
+
+\usepackage{xcolor}
+\usepackage{soul}
+
+\usepackage{atbegshi,etoolbox}
+
+\newcommand{\discardpages}[1]{% \discardpages{<csv list>}
+  \xdef\discard@pages{#1}% Store pages to discard
+  \AtBeginShipout{% At shipout, decide whether to discard page/not
+    \renewcommand*{\do}[1]{% How to handle each page entry in csv list
+      \ifnum\value{page}=##1\relax%
+        \AtBeginShipoutDiscard% Discard page/not
+        \gdef\do####1{}% Do nothing further
+      \fi%
+    }%
+    \expandafter\docsvlist\expandafter{\discard@pages}% Process list of pages to discard
+  }%
+}
+\newif\ifkeeppage
+\newcommand{\keeppages}[1]{% \keeppages{<csv list>}
+  \xdef\keep@pages{#1}% Store pages to keep
+  \AtBeginShipout{% At shipout, decide whether to discard page/not
+    \keeppagefalse%
+    \renewcommand*{\do}[1]{% How to handle each page entry in csv list
+      \ifnum\value{page}=##1\relax%
+        \keeppagetrue% Page should be kept
+        \gdef\do####1{}% Do nothing further
+      \fi%
+    }%
+    \expandafter\docsvlist\expandafter{\keep@pages}% Process list of pages to keep
+    \ifkeeppage\else\AtBeginShipoutDiscard\fi% Discard page/not
+  }%
+}
+
+%%% Remove pages to make a separate doc for Sup Materials
+%\discardpages{244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330}
+
+%\keeppages{244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330}
+
+
+\def\Red{black}
+
+\raggedbottom
+
+\newcommand{\tval}[3]{$t$(#1) = #2, $p$ #3}
+\newcommand{\Fval}[4]{$F$(#1, #2) = #3, $p$ #4}
+\newcommand{\mRT}[1]{$\rm{{mRT}}_{#1}$}
+\newcommand{\mAcc}[1]{$\rm{\overline{Acc}}_{#1}$}
+\newcommand{\rt}[2]{$\rm{mRT = #1ms, SD = #2ms}$}
+\newcommand{\acc}[2]{$\rm{Err = #1, SD = #2}$}
+\newcommand{\Acc}[2]{$\rm{Acc = #1, SD = #2}$}
+
+\newcommand{\St}[1]{$\rm{S_{#1}}$($t$)}
+\newcommand{\AY}[1]{$\rm{AY_{#1}}$($t$)}
+\newcommand{\XB}[1]{$\rm{X_{#1}B}$($t$)}
+\newcommand{\etap}[1]{$\eta_{p}^{2} = #1$}
+
+\def\mSD{$\rm{\overline{SD}}$ }
+\def\Ct{{\rm C($t$) }}
+\def\CCFh{{\rm CCF$_{high}$($t$) }} 
+\def\CCFl{{\rm CCF$_{low}$($t$) }}
+\def\SIC{{\rm SIC($t$) }}
+\def\CCF{{\rm CCF($t$) }}
+\def\Rh{{\rm R$_{high}$($t$) }} 
+\def\Rl{{\rm R$_{low}$($t$) }} 
+\def\Rd{{\rm R$_{diff}$($t$) }} 
+\def\t{{\rm \textit{t}}}
+\def\Cor{{\rm C$_{OR}$($t$) }}
+\def\Cand{{\rm C$_{AND}$($t$) }}
+\def\SLL{{\rm S_{LL}}}
+\def\SLH{{\rm S_{LH}}}
+\def\SHL{{\rm S_{HL}}}
+\def\SHH{{\rm S_{HH}}}
+
+
+\def\eg{\rm{e.g.,} }
+\def\ie{\rm{i.e.,} }
+
+
+%\thesistitle{Understanding the cognitive mechanisms behind the comparison of quantities and the confusion of numbers}
+\thesistitle{Understanding the Cognitive Mechanisms Behind Numerical Cognition}
+
+\title{\ttitle}
+
+\begin{document}
+
+% Calls to Thesis Class
+\frontmatter
+\setstretch{2}
+\fancyhead{}
+\rhead{\thepage} 
+\lhead{} 
+\pagestyle{fancy}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\hypersetup{pdftitle={\ttitle}}
+\hypersetup{pdfsubject=\subjectname}
+\hypersetup{pdfauthor=\authornames}
+\hypersetup{pdfkeywords=\keywordnames}
+
+% Thesis Title Page
+\begin{titlepage}
+\begin{center}
+\HRule \\[.2cm] 
+{\Huge \bfseries \ttitle}\\[.1cm] 
+\HRule \\[1cm] 
+\includegraphics[height=6cm,width=6cm]{Figures/Misc/UON.jpg}\\[.5cm] 
+\large by\\
+\large Paul M. Garrett B.Psych (Hons); Newcastle \\
+\large Supervised by A Prof. Ami Eidels \& Prof. Scott Brown\\[.5cm]
+\large A thesis submitted in fulfilment of the requirements\\ for the degree of \degreename~in Cognitive Psychology \\[0cm] 
+\large \today \\[.5cm]
+\large This research was supported by an Australian Government Research Training Program (RTP) Scholarship
+\vfill
+\end{center}
+\end{titlepage}
+
+\Declaration{
+\addtocontents{toc}{\vspace{1em}} 
+
+% Originality Statement
+\begin{itemize} 
+\item[\tiny{$\blacksquare$}] \emph{Originality:} I hereby certify that the work embodied in the thesis is my own work, conducted under normal supervision. The thesis contains no material which has been accepted for the award of any other degree or diploma in any university or other tertiary institution and, to the best of my knowledge and belief, contains no material previously published or written by another person, except where due reference has been made in the text. I give consent to the final version of my thesis being made available worldwide when deposited in the University’s Digital Repository**, subject to the provisions of the Copyright Act 1968. \\
+**Unless an Embargo has been approved for a determined period
+\item[\tiny{$\blacksquare$}] \emph{Collaboration:} I hereby certify that the work embodied in this thesis has been done in collaboration with other
+researchers, or carried out in other institutions. I have included as part of the thesis a statement clearly outlining the extent of collaboration, with whom and under
+what auspices.
+\item[\tiny{$\blacksquare$}] \emph{Authorship:} I hereby certify that the work embodied in this thesis contains published papers/scholarly work of which I am a joint author. I have included as part of the thesis
+a written statement, endorsed by my supervisor, attesting to my contribution to the joint
+publication/s/scholarly work.
+\end{itemize}
+\vspace{2em}
+Signed: \hspace{18em} Date: 2.12.2019}
+\clearpage 
+
+% Acknowledgements
+\acknowledgements{\addtocontents{toc}{\vspace{1em}}
+Firstly, I wish to acknowledge the outstanding mentorship provided by my primary supervisor, Associate Professor Ami Eidels. Ami has shaped me into the scientist I am today. Ami always made time for me, to guide me as a scientist, as an academic, and as a mentor to other students. Learning from him has been the greatest privilege of my PhD. It was from Ami that I learned the principles to which I aspire everyday.
+
+\begin{center} 
+\textit{``Have patience with your work. Have more with the work of others.''}
+
+\textit{``Tell the truth and tell it simply, everything after that is their problem.''}
+
+\textit{``Be kind. Kindness is one of the few currencies that count in research. \\Be kind to others. Be kind to yourself.''}
+
+\end{center}
+
+Secondly, I wish to thank my co-supervisor, Professor Scott Brown. Ever available, quick to laugh and keen to help. You contribution to this thesis cannot be measured in words, code or data; your contribution was the collaborative lab you made, the students you fostered and the support you always gave, unconditionally. 
+
+To the Newcastle cognition lab and the students that made it a home --- Laura Wall, Caroline Kuhne, Nathan Evans, Gavin Cooper, Reilly Innes, Angus McKerral, Ashlea Rendell, J.P. Cavallaro, Asheek Shimul \& Erin Robinson --- this thesis was possible because of you. Like all students who attempt a PhD, there were days when I struggled to think, to write, and to teach. On those days (and every other) you supported me with fun, love, insight and most of all coffee. I wish to specially thank my constant companion, Zachary Howard, who was with me at every step of this journey and often reached down to help me stand tall. To Alexander Thorpe, Laura Waters and Murray Bennett, I could not have asked for better students, colleagues, and friends. It was my privilege and a source of constant pride to have taught and to have learned from each of you.
+
+To the administration staff at the University of Newcastle --- Brendan Tisdell, Tara Magnay, Jess Fitzpatrick, and above all Danielle Storey --- thank you for your help and your friendship. Whether I was booking last minute flights, haphazardly searching for documents, or in one case, lost without accommodation in Boston, your skills, support, kindness, and genuine care were always felt and appreciated.
+
+To Associate Professor Daniel Little and my research family at the University of Melbourne, your support has meant everything to me. In particular, I wish to thank Sarah Moneer, Christina Van-Heer, Xue Jun, Jess Marris, Jason Zhou, Gabriel Ong, Ariel Goh, Marcellin Martinie, and Felix Singleton Thorn. Your friendship, love and support have kept me sane throughout my move to Melbourne and the writing of this thesis. 
+
+To the vast network of academics who have taught me these past four years, thank you. Although there are too many to list, I wish to thank Simon Dennis, Hyungwook Yim, James Townsend, Joseph Houpt, Daniel Little, Cheng-Ta Yang, Guy Hawkins, Philip Smith, Simon Lilburn, Emily Freeman, Kerry Charlmers, and David Landy. Above all, I wish to thank my oldest colleague, mentor and friend, Dr Patrick Cooper.
+
+Finally, to my family back in Newcastle and in particular, my loving partner Zoe. On every step of this journey, from my Bachelors through to this thesis, I have had your unwavering support. Although my name may appear on the doctorate, this achievement is yours too.}
+
+\clearpage 
+
+% Publications in Thesis
+\Publications{ 
+\addtocontents{toc}{\vspace{1em}}
+The work within this thesis has lead to the following journal articles that are either currently published, submitted, or in preparation, which I have listed with the full bibliographic citations in the order they appear in the thesis:
+
+\begin{enumerate}
+\item{Garrett, P. M., Howard, Z., Landy, D., Houpt, J. W., \& Eidels, A. (2019). Comparative Estimation Systems Perform Under Severely Limited Workload Capacity. \emph{Journal of mathematical psychology}.}
+
+\item Little, D. R., Eidles, A., Houpt, J. W., Garrett P. M., \& Griffiths, D. W. (2018). Systems Factorial Technology analysis of mixture models. \emph{Journal of mathematical psychology}.
+
+\item Garrett, P. M., Bennett, M., Howard, Z., Yang, C.T., Little, D., \& Eidels, A. (Under review). The cost of errors: confusion analysis and the mental representation of familiar and unfamiliar numerals. \textit{Acta Psychologica.}
+
+\item Garrett, P. M., Yang, C.T., Howard, Z., Bennett, M., Little, D., \& Eidels, A. (In submission). The cross cultural cost of errors: the mental representation of familiar and unfamiliar numerals across cultures \textit{Frontiers}
+\end{enumerate}
+}
+\clearpage 
+
+
+\AddPublications{ \addtocontents{toc}{\vspace{1em}}
+Listed are additional journal articles that are either currently published, submitted, or in preparation, which I have been involved in during my candidature:
+
+\begin{enumerate}
+\item \textbf{Garret, P. M.}, Chiam, P-Y, \& Yang, C-T. (In prep). Visual word processing efficiency for Chinese characters and English words. Planned Submission to \textit{Acta Psychologica}
+
+\item Sreekumar, V., Evans, N. J., \textbf{Garrett, P. M.}, Yim, H., Sederberg, P., \& Dennis, S. (In Prep). Using an experience sampling approach to distinguish distance versus location-based processing in memory for when. Planned Submission to \textit{Psychonomic Bulletin \& Review}.
+
+\item Howard, Z. L., \textbf{Garrett, P. M.}, Little, D., Townsend, J. T., \& Eidels, A. (Under review). Nice guys check twice: exhaustive processes in systems factorial technology. \textit{Psych Review}.
+
+\item Yim, H., \textbf{Garrett, P. M.}, Baker, M., Sreekumar, V., \& Dennis, S. (Under Review). Examining dependencies among different time scales in episodic memory - an experience sampling study. \textit{Journal of memory and language.}
+
+\item Yim, H., \textbf{Garrett, P. M.}, Baker, M., \& Dennis, S. (2019). Examining the independence of scales in episodic memory using experience sampling data. \emph{Proceedings of the 40th Annual Conference of the Cognitive Science Society}.
+
+\item Dennis, S., \textbf{Garrett, P. M.}, Yim, H., Sreekumar, V., \& Stone, B. (2019). Privacy vs open science. \emph{Behavioural research methods}.
+
+\item Dennis, S., Yim, H., \textbf{Garrett, P. M.}, Hamm, J., Osth, A., Sreekumar, V., \& Stone, B. (2019). A system for collecting active and passive experience sampling data. \emph{Behavioural research methods}.
+
+\item Dennis, S., \textbf{Garrett, P. M.}, Yim, H., Hamm, J., Osth, A., Sreekumar, V., \& Stone, B. (2019). Privacy versus Open Science. In Goel, A., Seifert, C., \& Freksa, C. (Eds.) Proceedings of the 41st Annual Conference of the Cognitive Science Society. Austin, TX: Cognitive Science Society.
+
+\item Dennis, S., Yim, H., Sreekumar, V., Evans. N., \textbf{Garrett, P. M.}, \& Sederberg, P. (2017). A hierarchical Bayesian model of ``memory for when'' based on experience sampling data. \emph{Proceedings of the 39th Annual Conference of the Cognitive Science Society.}
+
+\item Tillman, G., Howard, Z., \textbf{Garrett, P. M.}, \& Eidels, A. (2017). The Stroop Effect From a Mixture of Reading Processes: A Fixed-Point Analysis. \emph{Proceedings of the 39th Annual Conference of the Cognitive Science Society.}
+
+\item Cooper, P. S., \textbf{Garrett P. M.}, Rennie J. L. \& Karayanidis F. (2015) Task Uncertainty Can Account for Mixing and Switch Costs in Task-Switching. \emph{PLoS ONE.} 10(6).
+\end{enumerate}
+}
+\clearpage
+
+\AddConference{\addtocontents{toc}{\vspace{1em}}
+\begin{enumerate}
+\item \textbf{Garrett, P.M.} (2019). The PhD and beyond: Pathways into and out of, academia. Graduate research seminar. The University of Melbourne.
+
+\item \textbf{Garrett, P.M.} (2019). The PhD and beyond! Graduate researchers in psychological sciences workshop. University of Melbourne.
+
+\item \textbf{Garrett, P.M.}, Howard, Z., Houpt, J. W., Landy, D., \& Eidles, A. (2019). The comparison of large and small item-sets. The annual meeting of the Australian mathematical society, Melbourne.
+
+\item \textbf{Garrett, P.M.}, Howard, Z., Houpt, J. W., Landy, D., \& Eidles, A. (2018). Estimating multiple item-sets: Harder than you think! Sydney Postgraduate Psychology Conference, University of New South Wales.
+
+\item \textbf{Garrett, P.M.} (2018). Mathematics in Cognitive Psychology. Computer-Assisted Research Mathematics and its Applications (CARMA): mathematical thinking workshop, Newcastle.
+
+\item \textbf{Garrett, P.M.}, Yim, H., Sreekumar, V., Evans, N., \& Dennis, S. (2018). A model for 'When' in memory. Hunter medical research institute post-graduate conference, Newcastle.
+
+\item \textbf{Garrett, P.M.}, Yim, H., Sreekumar, V., Evans, N., \& Dennis, S. (2018). A predictive model for 'When' in human memory. Experimental Psychology Conference, Hobart.
+
+\item \textbf{Garrett, P.M.}, Houpt, J., Landy, D., \& Eidels, A. (2018). Behavioural measures of numerical cognition (Seminar). School of Psychology, The University of Melbourne, Australia.
+
+\item \textbf{Garrett, P.M.}, Waters, L.A., \& Eidels, A. (2017). How many jelly beans in two jars? Hunter medical research institute post-graduate conference, Newcastle.
+
+\item \textbf{Garrett, P.M.}, \& Eidels, A. (2015). Assessing systems of estimation. The annual meeting of the Australian mathematical society, Brisbane. 
+
+\item \textbf{Garrett, P.M.}, Houpt, J., Landy, D., \& Eidels, A. (2016). Parallel vs Serial systems of subitizing. Meeting of the 56$^{th}$ Psychonomic Society, Boston.
+
+\item \textbf{Garrett, P.M.}, Houpt, J., Landy, D., \& Eidels, A. (2016). Assessing systems of enumeration with SFT (Seminar). School of Psychology, Indiana University, Bloomington.
+
+\item\textbf{Garrett, P.M.}, Thorpe, A., \& Eidels, A. (2016). Are you being 'Serial'? Parallel vs Serial systems of enumeration. Hunter medical research institute post-graduate conference, Newcastle.
+
+\item \textbf{Garrett, P.M.}, \& Eidels, A. (2016). A new method for assessing systems of enumeration. The annual meeting of the Australian mathematical society, Hobart. 
+
+\end{enumerate}
+}
+
+\clearpage
+
+\Contribution{ \addtocontents{toc}{\vspace{1em}} 
+Below I have included a statement outlining both my contribution, and the involvement of others, for each chapter where the research performed involved collaboration, which addresses the requirements of both the \emph{Statement of Collaboration} and the \emph{Statement of Authorship}. The below statements have been endorsed by my primary supervisor, Professor Ami Eidels.
+
+\begin{itemize} 
+\item[\tiny{$\blacksquare$}] \emph{Chapter 2:} My contribution to the work included in this chapter involved designing the experiment, performing and interpreting all analyses, programming the experiments, and collecting data. Others involved in this work include Laura Waters who aided with data collection and Ami Eidels who supervised this project. 
+
+\item[\tiny{$\blacksquare$}] \emph{Chapter 3:} My contribution to the work included in this chapter involved designing the experiment, performing the majority of included analyses, and interpreting all included analyses, programming all experiments, and collecting data. Others involved in this work include Laura Waters, who contributed to the initial data collection and data analysis (not included in this chapter), Zachary Howard, who contributed to the published analyses, Joseph Houpt, who contributed the hierarchical statistical tools applied in the analyses, David Landy, who provided expertise on the numerical cognition research, and Ami Eidels, who provided expertise on the perception research and the application of systems factorial technology.
+
+\item[\tiny{$\blacksquare$}] \emph{Chapter 4:} My contribution to the work included in this chapter involved designing the experiment, performing and interpreting all analyses, programming all experiments, and collecting all data. Others involved in this work include Ami Eidels, who provided expertise on the perception research and the application of systems factorial technology, and Alexander Thorpe, who helped pilot an earlier version of this task not included in this thesis. 
+
+\item[\tiny{$\blacksquare$}] \emph{Chapter 5:} My contribution to the work included in this chapter involved coding the computational simulations. Others involved in this work include Daniel Little, who lead the writing on the associated published manuscript, Joseph Houpt and Ami Eidels, who in addition to Daniel Little contributed to the mathematical proofs, and David Griffiths, who contributed to computational models not included in this chapter. 
+
+\item[\tiny{$\blacksquare$}] \emph{Chapter 6:} My contribution to the work included in this chapter involved designing the experiment, performing and interpreting all included analyses and programming the experiment. Others involved in this work include Murray Bennett, who collected the majority of this data as part of his Honors year, Zachary Howard, who contributed to the application of Luce's choice model and the experimental design, Cheng-Ta Yang and Daniel Little, who both contributed to the experimental design, and Ami Eidles, who supervised this project. 
+
+\item[\tiny{$\blacksquare$}] \emph{Chapter 7:} My contribution to the work included in this chapter involved designing the experiment, performing and interpreting all included analyses and programming the experiment. Others involved in this work include Yu-Tzu Hsieh, who collected the majority of this data in Taiwan, Murray Bennett, Zachary Howard, Cheng-Ta Yang and Daniel Little, who helped in the experimental design, and Ami Eidels, who supervised this project.
+
+\end{itemize} 
+}
+
+\clearpage
+I, Ami Eidels, attest that Research Higher Degree candidate Paul Garrett, led or made major contributions to the papers listed in the ``Publications'' section above. These contributions include experimental design and programming, coordination and collection of data, analysis of data, the computational simulation of models, and serving as a lead author on three manuscripts, and co-author on a fourth manuscript.\\
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+Name: Ami Eidels\\
+\vspace{1em}
+Signed:  
+\\
+\vspace{1em}
+Date:
+2.12.2019 \\
+\end{flushleft}
+\end{minipage}
+
+\vspace*{\fill}
+
+The work in this thesis was supported by an Australian Government Research Training Program Scholarship awarded to Paul Garrett, an ARC Discovery Project Grant DP160102360 awarded to Ami Eidels and Daniel Little, the John and Daphne Keats endowment research fund G1700468 awarded to Zachary Howard, Paul Garrett, Cheng-Ta Yang, Daniel Little and Ami Eidels, and a Ministry of Science and Technology of Taiwan grant MOST 107-2410-H-006-055-MY2 awarded to Cheng-Ta Yang.
+
+\clearpage
+
+\pagestyle{fancy} 
+\lhead{\emph{Contents}}
+
+\addtotoc{Contents} 
+{\addtocontents{toc}{\vspace{1em}}
+\tableofcontents}
+
+%{\addtocontents{toc}{\vspace{1em}}
+%\listoftables}
+
+
+\addtotoc{Abstract}
+\abstract{\addtocontents{toc}{\vspace{1em}}
+\setstretch{2} 
+Quantities and numbers have shaped the collective course of human history, governing trade, science, mathematics, and warfare. The cognitive mechanisms that allow us to compare two quantities, or identify one numeral from another, are not well understood. In this thesis, I investigate the processes that govern numerical cognition. I present a series of investigations that identify how we combine information from two large quantities and two small quantities. Specifically, I identify the processing architecture (parallel vs serial) and workload capacity (efficiency) of these cognitive processing systems. I then extend this work with a simulation study to develop a new set of distributional signatures that can be used to identify mixtures of parallel and serial processing architectures. Finally, I engage in a cross-cultural investigation into the mental representations of numbers. By using confusion scores, I model the mental representations of Arabic, Thai, Chinese and dot numerals, in an English speaking and Chinese speaking cohort. This investigation shows how mental representations change with levels of expertise. This thesis develops new methods and analysis techniques, and provides new insight into the fundamental processes that govern numerical cognition.}
+
+% Add space to contents page
+\addtocontents{toc}{\vspace{2em}}
+\mainmatter % 1, 2, 3
+\pagestyle{fancy}
+
+\setlength{\parindent}{1.5cm}
+
+\dedicatory{For Zoe, \\[1em] every letter of every page, \\[1em] and every space that fits between, \\[1.5em] I made with you.}
+
+\dedicatory{For Patrick, \\[.1em] who opened the door, \\[1.5em] and Ami, \\[.5em] who showed me the way. \\[1.5em] Lastly, for kindness. \\[.5em] Without kindness, both science and I \\ would fall apart.}
+
+
+% TO DO:
+% Select Markers for Thesis!
+
+
+%%%    BEGIN INPUT COMMANDS FOR THESIS HERE
+
+\input{Chapters/1_Intro}
+\input{Chapters/2_Estimation}
+\input{Chapters/3_EstSystems}
+\input{Chapters/4_Subitizing} 
+\input{Chapters/5_MixtureModels}
+\input{Chapters/6_WheelTask}
+\input{Chapters/7_CrossCulture}
+\input{Chapters/8_Conclusion}
+
+
+
+\clearpage
+%\addcontentsline{toc}{section}{Online Supplementary Materials}
+%\addtocontents{toc}{\vspace{2em}}
+
+\backmatter % i, ii, iii
+
+\clearpage
+\lhead{References}
+\bibliographystyle{apacite}
+\renewcommand\bibname{References}
+\bibliography{references}
+\clearpage
+
+
+\addtocontents{toc}{\vspace{3em}}
+\appendix
+\renewcommand{\appendixname}{Supplementary Material}
+
+\chapter{Online Supplementary Materials}
+You can download the \href{https://github.com/paulgarrettphd/Site/raw/master/thesis/SupplementaryMaterials_PaulGarrett_Thesis_2019.pdf}{\color{blue}Supplementary Materials here\color{black}} or find them on my GitHub located under the repository paulgarrettphd/Site/thesis. You can also contact me directly at Paul.Garrett2016@gmail.com.
+
+\lhead{Supplementary Materials}
+\input{Appendices/Appendix_A}
+\input{Appendices/Appendix_B}
+\input{Appendices/Appendix_C}
+\input{Appendices/Appendix_D}
+\input{Appendices/Appendix_E}
+
+
+
+
+\end{document}

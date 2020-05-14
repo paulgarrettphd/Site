@@ -1,0 +1,386 @@
+\chapter{Supplementary Materials S4: \\ The cost of errors}
+\label{Appendix:D_WheelTask}
+\lhead{Supplementary S4. \emph{Cost of errors}}
+
+\setcounter{equation}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{section}{0}
+\renewcommand\thefigure{S4\thesection.\arabic{figure}}
+\renewcommand\thetable{S4\thesection.\arabic{table}}
+
+\noindent The materials in this supplementary chapter are relevant to Chapter 6 of the submitted thesis.
+
+\newpage
+
+\section{Luce's choice model}
+\label{Appendix:Luce}
+%\lhead{Supplementary \ref{Appendix:D_WheelTask}. \emph{Contrast Accuracy}}
+
+Luce’s (1963) choice model describes identification responses as probabilistic outcomes driven by the similarity of a stimulus to the others in the choice set, as well as a response-bias parameter --- one for each stimulus. By estimating the parameters of the model, researchers can examine the theoretically meaningful similarity scores free from the effect of response-bias that can contaminate the observed data. Formally, the probability of making response $j$ when presented with stimulus $i$ can be expressed as:
+
+\begin{equation}
+    \rm C_{ij} = \frac{ \eta_{ij} \beta_{j} }{ \sum_{k=1}^{N}  \eta_{ik} \beta_{k} }
+    \label{Eq:Luce}
+\end{equation}
+
+\noindent 
+where C$_{ij}$ is the theoretical similarity matrix for $i$ = 1, 2...N, $j$ = 1, 2...N. The similarity parameter $\eta$ is symmetrical along the matrix diagonal \ie $\eta_{ij}$ = $\eta_{ji}$, and $\eta_{ii}$ = 1 for all $i$. In the current study, we will employ nine unique numerals, resulting in [N(N + 1)/2] - 1 = 44 free parameters to be estimated from the data.
+
+We estimated the bias and similarity parameters of Luce’s (1963) choice model using the combination of a custom Differential-Evolution Markov chain Monte-Carlo (DE-MCMC) process and maximum likelihood estimation \cite{myung2003tutorial}. We initialised each of the 50 chains by estimating parameter values from Townsend's (1971) approximation of Luce's model:
+
+\begin{equation}
+    \rm \eta_{ij} = \sqrt{ \frac{ P(R_i | S_j) P(R_j | S_i) } 
+    { P(R_i | S_i) P(R_j | S_j) } }
+    \label{Eq:simAppx}
+\end{equation}
+
+\begin{equation}
+    \rm \beta_{j} = \frac{1}{N} \sum_{k=1}^{N} \sqrt{ \frac{ P(R_j|S_j)P(R_k|S_j) } { P(R_j|S_k)P(R_k|S_k) } }
+    \label{Eq:biasAppx}
+\end{equation}
+
+\noindent
+where $R$ is the response probability given stimulus $S$; then adding uniformly sampled noise. On each iteration, each chain proposed updated parameter estimates by weighting the previous estimates with the estimates of two randomly selected chains using the weighting formula outlined by \citeA{turner2013method}. The log-likelihood of these new parameters and the previous ones were computed by generating an expected confusion matrix (using the estimated parameters and Luce’s choice model) and comparing to the observed data, with the parameters that maximised the log-likelihood being kept. After 500 iterations the parameters from the chain with the highest log-likelihood were used for further analysis.
+
+\section{Experimental accuracy by contrast level and participant}
+\label{Appendix:contrastAcc}
+%\lhead{Supplementary \ref{Appendix:contrastAcc}. \emph{Contrast Accuracy}}
+
+The following section examines accuracy during experimental trials, over the five levels of contrast. We show that our manipulation of contrast appropriately influenced accuracy, that accuracy was relatively stable across blocks, and that accuracy was close to 60\% for all participants, across conditions of numeric-type (Arabic, Chinese, Thai and dot numerals).
+
+During experimental trials, stimuli were presented at five signal-levels, one step below the critical contrast value (level 1: hardest), and three steps above (levels 3, 4 and 5: easiest). As shown in Figure \ref{fig:AccContrast}.a., across numeric-types, mean accuracy increased linearly with the visibility of the contrast levels, being lowest at level 1 ($\mu$ = .32, $\sigma$ = .02) and highest at level 5 ($\mu$ = .8, $\sigma$ = .03). On average, accuracy was highest for Chinese numerals ($\mu$ = .6, $\sigma$ = .21), then Arabic ($\mu$ = .59, $\sigma$ = .19) and non-symbolic dots ($\mu$ = .59, $\sigma$ = .19), and finally, Thai numerals ($\mu$ = .54, $\sigma$ = .19).
+
+A repeated-measures ANOVA found a significant main effect of contrast level on accuracy (\Fval{4}{40}{447.914}{$<$ .001}, $\eta^2$ = .99), but not a main effect of numeric-type on accuracy (\Fval{3}{30}{2.134}{= 0.12}, $\eta^2$ = .18). There was no interaction effect between numeric-type and contrast level on accuracy (\Fval{12}{120}{0.951}{=.5}, $\eta^2$ = .09). Post-hoc pair-wise $t$-tests using the Bonferroni correction revealed significant differences between all combinations of contrast level ($p$ $<$ .001). By contrast, pair-wise $t$-tests showed no difference in accuracy between numeric-types, except between familiar items, Arabic numerals and non-symbolic dots ($p$ $<$ .05). All simple effects are reported in the supplementary materials, Tables \ref{tab:ttest_ContrastLevels} and \ref{tab:ttest_ContrastLang}. These results indicate our chosen signal levels appropriately influenced response accuracy. However, there appears to be no effect of numeric familiarity on response-accuracy. We will revisit this line of inquiry shortly. 
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .40]{Figures/Appendix/AppD/AccuracyByContrast.jpg}
+\caption{a) Mean accuracy across five signal contrast-levels, and four numeric-types. b) Mean accuracy across each experimental block. c) Mean accuracy for each participant by critical contrast level. d) Mean accuracy matched by contrast-level, across numeric-types. Error bars represent the standard-error of the mean.}
+\label{fig:AccContrast}
+\end{figure}
+
+Figure \ref{fig:AccContrast}.b. depicts mean accuracy across experimental blocks, for each numeric-type. Mean accuracy was comparable between numeric-types, and increased marginally with block number, being lowest at block 1 ($\mu$ = .50, $\sigma$ = .14) and highest at block 13 ($\mu$ = .62, $\sigma$ = .13). A repeated-measures ANOVA found a significant main effect of block on accuracy (\Fval{12}{120}{14.733}{$<$ .001}, $\eta^2$ = .6), and no main effect of numeric-type on accuracy (\Fval{3}{30}{2.139}{=0.12}, $\eta^2$ = .18). There was no interaction effect of numeric-type and block on accuracy (\Fval{36}{360}{.975}{=.51}, $\eta^2$ = .09). Post-hoc pair-wise analysis revealed significant differences in accuracy between early and late experimental blocks. Block 1 differed significantly from blocks 5--13 ($p$ $<$ .01), block 2 from blocks 12--13 ($p$ $<$ .01) and block 3 from blocks 9, 11 and 13 ($p$ $<$ .05). Simple effects are reported in the supplementary materials, Table \ref{tab:ttest_Block}. These results suggest a small practice effect, slightly boosting accuracy in later blocks.
+
+Figure \ref{fig:AccContrast}.c. presents mean experimental accuracy across critical contrast levels, separated by participant and numeric-type. A linear regression found a significant positive relationship between critical contrast and mean accuracy ($r^2$ = .551), suggesting a dependency between contrast and accuracy. To disentangle the effect of numeric-type and contrast on accuracy, we assessed accuracy matched across RGB values from each participant's five signal-contrast levels (see \ref{fig:AccContrast}.d).
+
+Figure \ref{fig:AccContrast}.d. presents mean accuracy matched across participant's five contrast-levels, separated by numeric-type. For example, if for Arabic numerals, participant S1 responded to RGB contrast values 130--134 and participant S2 responded to RGB contrast values 134--137, their accuracy at contrast value 134 would be averaged and depicted in Figure \ref{fig:AccContrast}.d. 
+
+Figure \ref{fig:AccContrast}.d. displays a positive relationship between contrast and matched accuracy. Matching accuracy for contrast levels when all numeric-types were presented, (\ie excluding contrast values 130 and 138), accuracy was highest for non-symbolic dots ($\mu$ = .63, $\sigma$ = .22), then Arabic numerals ($\mu$ = .59, $\sigma$ = .24), then Chinese numerals ($\mu$ = .58, $\sigma$ = .25) and lowest for Thai numerals ($\mu$ = .51, $\sigma$ = .21). 
+
+We completed a two-way between-subjects ANOVA to assess the effect of numeric-type and contrast-level on matched accuracy (Figure \ref{fig:AccContrast}.d). We found a main effect of numeric-type (\Fval{3}{185}{15.606}{$<$ .001}, $\eta^2$ = 0.04), and a main effect of contrast-level (\Fval{6}{185}{148.814}{$<$ .001}, $\eta^2$ = 0.79) on accuracy. There was no interaction effect between contrast level and numeric-type on accuracy (\Fval{18}{185}{0.003}{= .99}, $\eta^2$ = 0.01). Post-hoc pair-wise $t$-tests displayed significant differences between all contrast values ($p$ $<$ .001), except between the highest RGB values, 136 and 137 (all pair-wise tests are reported in the supplementary materials, Table \ref{tab:ttest_MatchedContrastAcc}. Post-hoc $t$-tests displayed a significant differences in accuracy between all numeric-types ($p$ $<$ .05), except for comparisons between Chinese and Thai, and Arabic and Thai numerals (all pair-wise tests reported in the supplementary materials, Table \ref{tab:ttest_MatchedLangAcc}. These results show a clear effect of contrast-level on accuracy. After accounting for contrast level, trends indicate that accuracy was higher for familiar items (Dots and Arabic) compared to unfamiliar items (Chinese and Thai), however, this was not borne out by the simple effects.
+
+
+%\pagebreak
+%Prefix a "S" to all equations, figures, tables and reset the counter
+%\setcounter{equation}{0}
+%\setcounter{figure}{0} 
+%\setcounter{table}{0}
+%\setcounter{page}{1}
+%\makeatletter
+%\renewcommand{\appendixname}{Supplementary Material}
+%\renewcommand{\theappendix}{S\arabic{section}.}
+%\makeatother
+\newpage
+%\appendix
+
+%\setcounter{section}{1}
+\section{Simple effects: \textit{t}-tests}
+\label{Appendix:ttestsWheel}
+%\lhead{Supplementary \ref{Appendix:D_WheelTask}. \emph{Simple Effects}} 
+
+\begin{table}[h]
+	\centering
+	\caption{Post-hoc comparisons between contrast levels. Level 1 being the lowest signal contrast level (hardest) and level 5 being the highest (easiest). Level 2 is elsewhere referred to as the critical contrast level. }
+	\begin{tabular}{lrrrrrr}
+		\hline
+		 &  & Mean Difference & SE & t & Cohen's d & $p_{bonf}$  \\
+		\hline
+		Level 1 & Level 2 & -0.113 & 0.009 & -12.34 & -3.720 & $<$ .001  \\
+		  & Level 3 & -0.241 & 0.014 & -17.13 & -5.166 & $<$ .001  \\
+		 & Level 4 & -0.355 & 0.016 & -21.97 & -6.623 & $<$ .001  \\
+		 & Level 5 & -0.440 & 0.016 & -26.89 & -8.106 & $<$ .001  \\
+		Level 2 & Level 3 & -0.128 & 0.009 & -13.97 & -4.211 & $<$ .001  \\
+		  & Level 4 & -0.242 & 0.011 & -21.72 & -6.550 & $<$ .001  \\
+		 & Level 5 & -0.327 & 0.015 & -22.55 & -6.798 & $<$ .001  \\
+		Level 3 & Level 4 & -0.114 & 0.006 & -18.67 & -5.629 & $<$ .001  \\
+		  & Level 5 & -0.199 & 0.009 & -22.75 & -6.860 & $<$ .001  \\
+		Level 4 & Level 5 & -0.085 & 0.008 & -10.29 & -3.104 & $<$ .001  \\
+		\hline\hline
+	\end{tabular} 
+	\label{tab:ttest_ContrastLevels}
+\end{table}
+
+\begin{table}[!h]
+	\centering
+	\caption{Post-hoc comparisons between numeric-types.}
+	\begin{tabular}{lrrrrrr}
+		\hline
+		 &  & Mean Difference & SE & t & Cohen's d & $p_{bonf}$  \\
+		\hline
+		ARABIC & CHINESE & -0.085 & 0.051 & -1.678 & -0.506 & 0.746  \\
+		  & THAI & -0.049 & 0.063 & -0.766 & -0.231 & 1.000  \\
+		 & DOTS & -0.120 & 0.036 & -3.353 & -1.011 & 0.044  \\
+		CHINESE & THAI & 0.037 & 0.058 & 0.640 & 0.193 & 1.000  \\
+		  & DOTS & -0.035 & 0.041 & -0.839 & -0.253 & 1.000  \\
+		THAI & DOTS & -0.072 & 0.044 & -1.616 & -0.487 & 0.822  \\
+		\hline\hline
+	\end{tabular} 
+	\label{tab:ttest_ContrastLang}
+\end{table}
+
+
+\newpage
+\begin{longtable}{lrrrrr}
+\caption{Post-hoc comparisons of accuracy by block number.}
+\label{tab:ttest_Block}\\
+	\hline
+	 &  & Mean Difference & SE & t & $p_{bonf}$ \\
+	\hline
+	\endfirsthead
+	
+	\multicolumn{6}{c}%
+    {{\bfseries Table \thetable\ continued from previous page}} \\
+    \hline
+    &  & Mean Difference & SE & t & $p_{bonf}$ \\
+    \hline
+    \endhead
+	
+	Block1 & Block2 & -0.032 & 0.014 & -2.257 & 1.000  \\
+	  & Block3 & -0.059 & 0.015 & -3.992 & 0.199  \\
+	 & Block4 & -0.072 & 0.015 & -4.857 & 0.052  \\
+	 & Block5 & -0.066 & 0.013 & -5.209 & 0.031  \\
+	 & Block6 & -0.082 & 0.013 & -6.336 & 0.007  \\
+	 & Block7 & -0.078 & 0.011 & -6.756 & 0.004  \\
+	 & Block8 & -0.080 & 0.013 & -6.188 & 0.008  \\
+	 & Block9 & -0.096 & 0.012 & -8.144 & $<$ .001  \\
+	 & Block10 & -0.092 & 0.012 & -7.834 & 0.001  \\
+	 & Block11 & -0.096 & 0.014 & -6.623 & 0.005  \\
+	 & Block12 & -0.096 & 0.014 & -6.747 & 0.004  \\
+	 & Block13 & -0.115 & 0.017 & -6.841 & 0.004  \\
+	Block2 & Block3 & -0.026 & 0.013 & -1.961 & 1.000  \\
+	  & Block4 & -0.040 & 0.014 & -2.799 & 1.000  \\
+	 & Block5 & -0.034 & 0.017 & -2.004 & 1.000  \\
+	 & Block6 & -0.049 & 0.013 & -3.660 & 0.342  \\
+	 & Block7 & -0.045 & 0.012 & -3.891 & 0.234  \\
+	 & Block8 & -0.048 & 0.016 & -2.955 & 1.000  \\
+	 & Block9 & -0.063 & 0.015 & -4.334 & 0.116  \\
+	 & Block10 & -0.060 & 0.016 & -3.749 & 0.296  \\
+	 & Block11 & -0.064 & 0.016 & -3.870 & 0.243  \\
+	 & Block12 & -0.064 & 0.009 & -7.064 & 0.003  \\
+	 & Block13 & -0.082 & 0.013 & -6.105 & 0.009  \\
+	Block3 & Block4 & -0.014 & 0.012 & -1.115 & 1.000  \\
+	  & Block5 & -0.007 & 0.009 & -0.806 & 1.000  \\
+	 & Block6 & -0.023 & 0.009 & -2.597 & 1.000  \\
+	 & Block7 & -0.019 & 0.008 & -2.338 & 1.000  \\
+	 & Block8 & -0.021 & 0.010 & -2.127 & 1.000  \\
+	 & Block9 & -0.037 & 0.007 & -5.200 & 0.031  \\
+	 & Block10 & -0.034 & 0.011 & -2.964 & 1.000  \\
+	 & Block11 & -0.037 & 0.006 & -5.826 & 0.013  \\
+	 & Block12 & -0.038 & 0.008 & -4.837 & 0.053  \\
+	 & Block13 & -0.056 & 0.008 & -7.089 & 0.003  \\
+	Block4 & Block5 & 0.006 & 0.014 & 0.456 & 1.000  \\
+	  & Block6 & -0.009 & 0.012 & -0.772 & 1.000  \\
+	 & Block7 & -0.005 & 0.010 & -0.527 & 1.000  \\
+	 & Block8 & -0.008 & 0.010 & -0.791 & 1.000  \\
+	 & Block9 & -0.023 & 0.010 & -2.409 & 1.000  \\
+	 & Block10 & -0.020 & 0.014 & -1.468 & 1.000  \\
+	 & Block11 & -0.024 & 0.011 & -2.203 & 1.000  \\
+	 & Block12 & -0.024 & 0.009 & -2.758 & 1.000  \\
+	 & Block13 & -0.042 & 0.013 & -3.359 & 0.566  \\
+	Block5 & Block6 & -0.016 & 0.011 & -1.430 & 1.000  \\
+	  & Block7 & -0.012 & 0.011 & -1.104 & 1.000  \\
+	 & Block8 & -0.014 & 0.009 & -1.518 & 1.000  \\
+	 & Block9 & -0.030 & 0.010 & -3.108 & 0.865  \\
+	 & Block10 & -0.027 & 0.010 & -2.591 & 1.000  \\
+	 & Block11 & -0.030 & 0.007 & -4.418 & 0.101  \\
+	 & Block12 & -0.030 & 0.012 & -2.495 & 1.000  \\
+	 & Block13 & -0.049 & 0.011 & -4.255 & 0.131  \\
+	Block6 & Block7 & 0.004 & 0.006 & 0.689 & 1.000  \\
+	  & Block8 & 0.002 & 0.009 & 0.162 & 1.000  \\
+	 & Block9 & -0.014 & 0.010 & -1.468 & 1.000  \\
+	 & Block10 & -0.011 & 0.011 & -1.020 & 1.000  \\
+	 & Block11 & -0.014 & 0.009 & -1.640 & 1.000  \\
+	 & Block12 & -0.015 & 0.009 & -1.636 & 1.000  \\
+	 & Block13 & -0.033 & 0.007 & -4.881 & 0.050  \\
+	Block7 & Block8 & -0.003 & 0.007 & -0.341 & 1.000  \\
+	  & Block9 & -0.018 & 0.008 & -2.217 & 1.000  \\
+	 & Block10 & -0.015 & 0.012 & -1.200 & 1.000  \\
+	 & Block11 & -0.018 & 0.008 & -2.332 & 1.000  \\
+	 & Block12 & -0.019 & 0.008 & -2.482 & 1.000  \\
+	 & Block13 & -0.037 & 0.008 & -4.783 & 0.058  \\
+	Block8 & Block9 & -0.016 & 0.008 & -1.911 & 1.000  \\
+	  & Block10 & -0.012 & 0.012 & -1.019 & 1.000  \\
+	 & Block11 & -0.016 & 0.005 & -2.959 & 1.000  \\
+	 & Block12 & -0.016 & 0.011 & -1.506 & 1.000  \\
+	 & Block13 & -0.035 & 0.011 & -3.231 & 0.703  \\
+	Block9 & Block10 & 0.003 & 0.010 & 0.344 & 1.000  \\
+	  & Block11 & -2.525e-4 & 0.007 & -0.034 & 1.000  \\
+	 & Block12 & -5.051e-4 & 0.009 & -0.056 & 1.000  \\
+	 & Block13 & -0.019 & 0.011 & -1.684 & 1.000  \\
+	Block10 & Block11 & -0.004 & 0.011 & -0.312 & 1.000  \\
+	  & Block12 & -0.004 & 0.011 & -0.335 & 1.000  \\
+	 & Block13 & -0.022 & 0.012 & -1.815 & 1.000  \\
+	Block11 & Block12 & -2.525e-4 & 0.010 & -0.025 & 1.000  \\
+	  & Block13 & -0.019 & 0.009 & -2.119 & 1.000  \\
+	Block12 & Block13 & -0.018 & 0.007 & -2.729 & 1.000  \\
+	\hline\hline
+\end{longtable} 
+
+\begin{table}[htb]
+	\centering
+	\caption{Post-hoc comparisons of accuracy matched by contrast level, for RGB contrast values 131--136.}
+	\begin{tabular}{lrrrrrr}
+		\hline
+		 &  & Mean Difference & SE & t & Cohen's d & p$_{bonf}$  \\
+		\hline
+		131 & 132 & -0.118 & 0.028 & -4.227 & -1.572 & $<$ .001  \\
+		  & 133 & -0.235 & 0.027 & -8.851 & -2.504 & $<$ .001  \\
+		 & 134 & -0.361 & 0.026 & -13.731 & -3.528 & $<$ .001  \\
+		 & 135 & -0.476 & 0.027 & -17.916 & -5.024 & $<$ .001  \\
+		 & 136 & -0.568 & 0.029 & -19.850 & -7.684 & $<$ .001  \\
+		 & 137 & -0.621 & 0.034 & -18.528 & -8.921 & $<$ .001  \\
+		132 & 133 & -0.117 & 0.021 & -5.654 & -1.240 & $<$ .001  \\
+		  & 134 & -0.243 & 0.020 & -11.925 & -2.394 & $<$ .001  \\
+		 & 135 & -0.358 & 0.021 & -17.265 & -3.757 & $<$ .001  \\
+		 & 136 & -0.450 & 0.023 & -19.309 & -5.617 & $<$ .001  \\
+		 & 137 & -0.503 & 0.029 & -17.277 & -6.344 & $<$ .001  \\
+		133 & 134 & -0.125 & 0.019 & -6.764 & -1.150 & $<$ .001  \\
+		  & 135 & -0.240 & 0.019 & -12.700 & -2.306 & $<$ .001  \\
+		 & 136 & -0.333 & 0.022 & -15.312 & -3.505 & $<$ .001  \\
+		 & 137 & -0.386 & 0.028 & -13.839 & -3.947 & $<$ .001  \\
+		134 & 135 & -0.115 & 0.018 & -6.233 & -1.054 & $<$ .001  \\
+		  & 136 & -0.208 & 0.021 & -9.728 & -2.037 & $<$ .001  \\
+		 & 137 & -0.261 & 0.028 & -9.452 & -2.462 & $<$ .001  \\
+		135 & 136 & -0.092 & 0.022 & -4.262 & -0.968 & $<$ .001  \\
+		  & 137 & -0.146 & 0.028 & -5.224 & -1.478 & $<$ .001  \\
+		136 & 137 & -0.053 & 0.030 & -1.778 & -0.675 & 1.000  \\
+		\hline
+	\end{tabular} 
+\end{table}
+\label{tab:ttest_MatchedContrastAcc}
+
+\begin{table}[htb]
+	\centering
+	\caption{Post-hoc comparisons of accuracy matched by contrast level, across numeric-types.}
+	\begin{tabular}{lrrrrrr}
+		\hline
+		 &  & Mean Difference & SE & t & Cohen's d & p$_{bonf}$  \\
+		\hline
+		ARABIC & CHINESE & -0.052 & 0.018 & -2.857 & -0.261 & 0.029  \\
+		  & DOTS & 0.074 & 0.019 & 3.891 & 0.379 & $<$ .001  \\
+		 & THAI & -0.009 & 0.019 & -0.472 & -0.043 & 1.000  \\
+		CHINESE & DOTS & 0.126 & 0.019 & 6.779 & 0.674 & $<$ .001  \\
+		  & THAI & 0.043 & 0.019 & 2.309 & 0.213 & 0.132  \\
+		DOTS & THAI & -0.083 & 0.019 & -4.271 & -0.420 & $<$ .001  \\
+		\hline
+	\end{tabular} 
+\end{table}
+\label{tab:ttest_MatchedLangAcc}
+
+
+%\setcounter{section}{2}
+\section{Scree analysis of bias-free MDS stress values} 
+\label{Appendix:MDS1}
+%\lhead{Supplementary \ref{Appendix:D_WheelTask}. \emph{MDS}} 
+
+Scree analysis compares the multidimensional stress values (y-axis) against the number of MDS dimensions (x-axis). Scree analysis, such as this, is a subjective measure. A useful heuristic for identifying the correct number of dimensions is to look for the `elbow' where an increase in dimensions does not meaningfully improve stress values. This elbow has been identified by a marker in each plot.
+
+\subsection{Scree Plots} 
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .7]{Figures/Appendix/AppD/MDSunbiasScree_1.jpg}
+\caption{Bias-free MDS scree plots for Arabic digits (blue) and symbolic dots (green). The y-axis displays stress values, and the x-axis the number of dimensions. Markers identify the optimal number of dimensions in each scree plot.}
+\label{fig:Apx_ScreeEngDot}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .7]{Figures/Appendix/AppD/MDSunbiasScree_2.jpg}
+\caption{Bias-free MDS scree plots for Chinese (red) and Thai (purple) symbols. The y-axis displays stress values, and the x-axis the number of dimensions. Markers identify the optimal number of dimensions in each scree plot.}
+\label{fig:Apx_ScreeChnThi}
+\end{figure}
+
+\clearpage \newpage
+\subsection{Individual MDS solutions} 
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_1.jpg}
+\caption{Individual bias-free MDS solutions for the Arabic digits.}
+\label{fig:Apx_MDSenglish}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_2.jpg}
+\caption{Individual bias-free MDS solutions for symbolic dots. Dots are represented by Arabic numbers for simplicity.}
+\label{fig:Apx_MDSdots}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_3.jpg}
+\caption{Individual bias-free MDS solutions for Chinese symbols.}
+\label{fig:Apx_MDSchinese}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_4.jpg}
+\caption{Individual bias-free MDS solutions for the Thai symbols.}
+\label{fig:Apx_MDSthai}
+\end{figure}
+
+
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_1_Biased.jpg}
+\caption{Individual biased MDS solutions for the Arabic digits.}
+\label{fig:Apx_MDSenglishBiased}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_2_Biased.jpg}
+\caption{Individual biased MDS solutions for symbolic dots. Dots are represented by Arabic numbers for simplicity.}
+\label{fig:Apx_MDSdotsBiased}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_3_Biased.jpg}
+\caption{Individual bias-free MDS solutions for Chinese symbols.}
+\label{fig:Apx_MDSchineseBiased}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .67]{Figures/Appendix/AppD/Indiv_MDS_4_Biased.jpg}
+\caption{Individual bias-free MDS solutions for Thai symbols.}
+\label{fig:Apx_MDSthaiBiased}
+\end{figure}
+
+
+%\setcounter{section}{3}
+\clearpage
+\section{MDS cluster frequency heatmaps}
+\label{Appendix:Cluster1}
+%\lhead{Supplementary \ref{Appendix:D_WheelTask}. \emph{MDS Cluster Frequency Heatmaps}} 
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .7]{Figures/Appendix/AppD/2D_KM2clusterHeatmapCustom_wDots.jpg}
+\caption{Proportional cluster-frequency heatmap for participants with two-dimensional MDS solutions, across 2--6 K-mean clusters. Larger proportions (darker colored squares) indicate items which most frequently cluster together.}
+\label{fig:Apx_2D_MDScounts}
+\end{figure}
+
+\begin{figure}[tbh]
+\centering \includegraphics[scale = .7]{Figures/Appendix/AppD/3D_KM2clusterHeatmapCustom_wDots.jpg}
+\caption{Proportional cluster-frequency heatmap for participants with three-dimensional MDS solutions, across 2--6 K-mean clusters. Larger proportions (darker colored squares) indicate items which most frequently cluster together.}
+\label{fig:Apx_3D_MDScounts}
+\end{figure}
+
+
+\clearpage
+%\setcounter{section}{4}
+\section{Three dimensional group indscal solutions}
+\label{Appendix:Indscal 3D}
+%\lhead{Supplementary \ref{Appendix:Indscal 3D}. \emph{Indscal 3D}} 
+
+Figure \ref{fig:Apx_3D_Indscal} displays the group indscal MDS and K-mean cluster frequency results for those participants identified with three MDS dimensions. No participants displayed a third MDS dimension in the symbolic-dot numeric-type. MDS and cluster frequency plots are comparable between three-dimensional and two-dimensonal indscal results. Arabic items displayed similar clusters, however, item `9' shifts from being grouped with items `3' and `8', to being grouped with items `5' and `6'. Chinese results are comparable between two- and three-dimensional plots, except in the three-dimensional plot, item \begin{CJK}{UTF8}{gbsn} 四 \end{CJK} shifts away from all items along the third-dimension. Finally, similar results were observed in the three-dimensional Thai MDS and cluster-frequency plots, except that item-numbers [1,6] move away from all other items along the third-dimension.
+
+\begin{figure}[tbh]
+\centering \includegraphics[width = \linewidth]{Figures/Appendix/AppD/Indscal_3Dall.jpg}
+\caption{a) Three dimensional group indscal MDS representations for Arabic (N = 3), Chinese (N = 4) and Thai (N = 3) numeric-types. b) associated K-mean cluster frequency heat maps for three dimensional indscal MDS solutions.}
+\label{fig:Apx_3D_Indscal}
+\end{figure}
