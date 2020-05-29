@@ -2,10 +2,9 @@
 title: "National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers"
 author: 
  - "Paul M. Garrett. Complex Human Data Hub, the University of Melbourne."
- - 'Find me on twitter @ PaulMGarrett, https://twitter.com/PaulMGarrett'
- - 'or via email: paulgarrett2016@gmail.com'
+ - 'Find me on twitter: PaulMGarrett https://twitter.com/PaulMGarrett or by email: paulgarrett2016@gmail.com'
  - 'See our latest international COVID-19 research at https://stephanlewandowsky.github.io/UKsocialLicence'
-date: "29/5/2020"
+date: "Edited: 29/5/2020"
 output: html_document
 ---
 
@@ -20,19 +19,26 @@ lapply(c('tidyverse','expss','ggplot2','rio', 'reshape2','scales','knitr'),
 
 ```
 
-Hi fellow COVID Researchers! 
+Hello fellow COVID Researchers! 
 
-Since each of us may need to plot key dates with up-to-date COVID cases at a national level, I've created a couple of functions that work together to help address the issue - at least, I hope they will help! You can download the original Rmarkdown code from my Github @ [PaulGarrettPhD.](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd).
+Since each of us may need to plot key dates with up-to-date COVID cases at a national level, I've created a couple of functions that work together to help address the issue - at least, I hope they will help! You can download the original Rmarkdown code from my Github @ [PaulGarrettPhD.](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd) or you can copy the embedded code as we go.
 
-Below are two main functions:
-    1. WorldCOVIDdata
-    2. pltCases
+Below I will provide the code for two main functions:
     
+  1. WorldCOVIDdata
+  2. pltCases
+    
+# Loading World COVID Data
+
 The WorldCOVIDdata functions sources COVID cases and deaths from the European Center for Disease Control and Prevention. These numbers are updated daily. The function can take a list of countries and will return the cases, deaths, cumulative cases & cumulative deaths over a period of time for each country in the list. It also works for a single country.
 
 The pltcases function is used for displaying COVID-19 cases and fatalities for a given country, while also displaying a list of key dates. I'll quickly take you through the functions and show some output.
 
 ```{r}
+## Pre-loaded packages...
+# lapply(c('tidyverse','expss','ggplot2','rio', 'reshape2','scales','knitr'), require, character.only = TRUE)
+
+
 # Function for loading in world COVID stats using a specified list of countries within a given date range.
 # If no countries are specified, Australia is returned by default between Jan 1st 2020 - the current date.
 # Data from the European Center for Disease Prevention and Control. Updated daily.
@@ -57,8 +63,11 @@ WorldCOVIDdata = function(Countries, StartDate, EndDate){
   WorldSubset = subset(WorldCOVID, country %in% Countries) %>% filter(date >= StartDate & date <= EndDate)
   return(WorldSubset)
 }
+```
 
+You can check what countries are in the data sheet by calling the COVIDcountries() function below:
 
+```{r}
 # The below function was created to provide a list of all countries within the online spreadsheet. You can run the function and search to see if a country is included. If it is, the following plot functions will work. By last count there were 210 countries in this list.
 COVIDcountries = function(){
   WorldCOVID = rio::import('https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide.xlsx')
@@ -68,7 +77,7 @@ COVIDcountries = function(){
 
 ```
 
-An example of the output from this function is shown in the table below. The function returns a data frame with columns identifying the country, date, daily cases, daily deaths, population data from 2018, cumulative cases and cumulative deaths. This has made life much easier when plotting COVID cases by nationality, for example, in our recent survey where we plot the public's estimate of national fatalities against the true fatalities on that specific day.
+An example of the output from the WorldCOVIDdata function is shown in the table below. The function returns a data frame with columns identifying the country, date, daily cases, daily deaths, population data from 2018, cumulative cases and cumulative deaths. This has made life much easier when plotting COVID cases by nationality, for example, in our recent survey where we plot the public's estimate of national fatalities against the true fatalities on that specific day.
 
 ```{r, include=TRUE, echo=TRUE}
 # Set current data in Year Month Day format
@@ -80,6 +89,8 @@ COVIDstats = WorldCOVIDdata(c('Australia','United_Kingdom', 'Taiwan'), CurrentDa
 kable(head(COVIDstats))
 
 ```
+
+# Plotting National COVID Data with Key Dates
 
 The next function plots these daily cases and deaths in a handy barplot format. It also takes a date-vector and information-vector and overlays this on the figure. These date/info vectors are optional arguments, as is the title, the date breaks (e.g., a tick mark every '7 days' or '14 days'; must be string in format 'X days'), the tick off-set from the X-axis for the date labels, and the font size of the date information.
 
@@ -285,9 +296,11 @@ Cheers,
 Paul
 
 
-Cite as: 
+Please cite me as:
 
 P. M. Garrett (2020). [National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers.](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd) Retrieved from https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd 
+
+# Further Examples
 
 ```{r, fig.width = 10, fig.height= 5}
 # Note that no end date has been supplied so the function will default to the current date.
