@@ -1,6 +1,10 @@
 ---
 title: "National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers"
-author: "Paul M. Garrett. Complex Human Data Hub, the University of Melbourne."
+author: 
+ - "Paul M. Garrett. Complex Human Data Hub, the University of Melbourne."
+ - 'Find me on twitter @ PaulMGarrett, https://twitter.com/PaulMGarrett'
+ - 'or via email: paulgarrett2016@gmail.com'
+ - 'See our latest international COVID-19 research at https://stephanlewandowsky.github.io/UKsocialLicence'
 date: "29/5/2020"
 output: html_document
 ---
@@ -18,7 +22,7 @@ lapply(c('tidyverse','expss','ggplot2','rio', 'reshape2','scales','knitr'),
 
 Hi fellow COVID Researchers! 
 
-Since each of us may need to plot key dates with up-to-date COVID cases at a national level, I've created a couple of functions that work together to help address the issue - at least, I hope they will help!
+Since each of us may need to plot key dates with up-to-date COVID cases at a national level, I've created a couple of functions that work together to help address the issue - at least, I hope they will help! You can download the original Rmarkdown code from my Github @ [PaulGarrettPhD.](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd).
 
 Below are two main functions:
     1. WorldCOVIDdata
@@ -280,7 +284,10 @@ Finally, I'll plot the cases in a range of countries below. I won't bother with 
 Cheers,
 Paul
 
-cite: P. M. Garrett (2020). [National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers.](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd) Retrieved from https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd 
+
+Cite as: 
+
+P. M. Garrett (2020). [National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers.](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd) Retrieved from https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd 
 
 ```{r, fig.width = 10, fig.height= 5}
 # Note that no end date has been supplied so the function will default to the current date.
