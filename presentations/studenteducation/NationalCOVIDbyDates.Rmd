@@ -1,0 +1,403 @@
+---
+title: "National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers"
+author: "Paul M. Garrett"
+date: "29/5/2020"
+output: html_document
+---
+
+```{r setup, echo = TRUE, include=FALSE, scipen=999999}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+shell('cls'); rm(list=ls())
+
+# install.packages(c('tidyverse','expss','ggplot2','rio', 'reshape2','scales','knitr'))
+
+lapply(c('tidyverse','expss','ggplot2','rio', 'reshape2','scales','knitr'),
+       require, character.only = TRUE)
+
+```
+
+Hi fellow COVID Researchers! 
+
+Since each of us may need to plot key dates with up-to-date COVID cases at a national level, I've created a couple of functions that work together to help address the issue - at least, I hope they will help!
+
+Below are two main functions:
+    1. WorldCOVIDdata
+    2. pltCases
+    
+The WorldCOVIDdata functions sources COVID cases and deaths from the European Center for Disease Control and Prevention. These numbers are updated daily. The function can take a list of countries and will return the cases, deaths, cumulative cases & cumulative deaths over a period of time for each country in the list. It also works for a single country.
+
+The pltcases function is used for displaying COVID-19 cases and fatalities for a given country, while also displaying a list of key dates. I'll quickly take you through the functions and show some output.
+
+```{r}
+# Function for loading in world COVID stats using a specified list of countries within a given date range.
+# If no countries are specified, Australia is returned by default between Jan 1st 2020 - the current date.
+# Data from the European Center for Disease Prevention and Control. Updated daily.
+# Countries can be a vector: Countries = c('Australia', 'United_Kingdom', 'United_States_of_America', 'Taiwan', 'Germany', 'China'); or a single case: Countries = 'Hungary'.
+# Dates must be a string formatted by Y%-%m-%d, for example, '2020-06-29'
+# Spaces between country names must be replaced by an underscore '_', see example above.
+WorldCOVIDdata = function(Countries, StartDate, EndDate){
+  if( missing(Countries) ){ Countries = c('Australia') }
+  if( missing(StartDate) ){ StartDate = '2020-01-01' }
+  if( missing(EndDate) ){ EndDate = as.Date( Sys.time(), format = 'Y%-%m-%d') }
+  
+  WorldCOVID = rio::import('https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide.xlsx') %>% 
+    arrange( countriesAndTerritories, year, month, day ) %>% 
+    group_by(countriesAndTerritories) %>% 
+    mutate(cases.cum = cumsum(cases), deaths.cum = cumsum(deaths), dateRep = as.Date(dateRep, format = '%d/%m/%Y')) %>% 
+    select( -c( day, month, year, geoId ) ) %>% 
+    rename(date = dateRep, country = countriesAndTerritories, code = countryterritoryCode)  
+
+  WorldCOVID = complete(WorldCOVID, date = seq.Date(min(WorldCOVID$date), max(WorldCOVID$date), by='day') ) %>% 
+    group_by(country) %>% fill(cases, deaths, code, cases.cum, deaths.cum) 
+
+  WorldSubset = subset(WorldCOVID, country %in% Countries) %>% filter(date >= StartDate & date <= EndDate)
+  return(WorldSubset)
+}
+
+
+# The below function was created to provide a list of all countries within the online spreadsheet. You can run the function and search to see if a country is included. If it is, the following plot functions will work. By last count there were 210 countries in this list.
+COVIDcountries = function(){
+  WorldCOVID = rio::import('https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide.xlsx')
+  Countries = unique(WorldCOVID$countriesAndTerritories)
+  return(Countries)
+}
+
+```
+
+An example of the output from this function is shown in the table below. The function returns a data frame with columns identifying the country, date, daily cases, daily deaths, population data from 2018, cumulative cases and cumulative deaths. This has made life much easier when plotting COVID cases by nationality, for example, in our recent survey where we plot the public's estimate of national fatalities against the true fatalities on that specific day.
+
+```{r, include=TRUE, echo=TRUE}
+# Set current data in Year Month Day format
+CurrentDate = as.Date( Sys.time(), format = 'Y%-%m-%d')
+
+# Get data from the start of the year to the current date for Aus and the UK
+COVIDstats = WorldCOVIDdata(c('Australia','United_Kingdom', 'Taiwan'), CurrentDate-1, CurrentDate)
+
+kable(head(COVIDstats))
+
+```
+
+The next function plots these daily cases and deaths in a handy barplot format. It also takes a date-vector and information-vector and overlays this on the figure. These date/info vectors are optional arguments, as is the title, the date breaks (e.g., a tick mark every '7 days' or '14 days'; must be string in format 'X days'), the tick off-set from the X-axis for the date labels, and the font size of the date information.
+
+```{r}
+pltCases = function( Country, StartDate, EndDate, DateList, DateInfo, Title, dateBreaks, tickoffset, Font, Ymax  ){
+  if (missing(EndDate)){EndDate = as.Date( Sys.time(), format = 'Y%-%m-%d')}
+  if (missing(DateList)){DateList = FALSE}
+  if (missing(DateInfo)){DateInfo = FALSE}
+  if (missing(Title)){Title = FALSE}
+  if (missing(dateBreaks)){dateBreaks = '14 days'}
+  if (missing(tickoffset)){tickoffset = FALSE}
+  if (missing(Font)){Font = 2.9}
+  if (missing(Ymax)){Ymax = FALSE}
+  
+  # Setup the plot theme - like APA style but, you know, better.
+  windowsFonts("Helvetica" = windowsFont("Helvetica"))
+  PltTheme = theme(  text=element_text(family="Helvetica"),
+                    plot.title = element_text(face = "bold", hjust = 0.5, size = 18, family="Helvetica"), 
+                    axis.title = element_text(face = 'bold', size = 16, color='black'),
+                    axis.text  = element_text(size=14, color='black'), 
+                    axis.line = element_line(colour = 'black', size = .5), 
+                    legend.title = element_blank(), legend.position = c(.3, .8),
+                    legend.background = element_rect(fill=alpha('white', 0.)),
+                    panel.grid.major = element_blank(), 
+                    panel.grid.minor = element_blank(),
+                    panel.background = element_blank(),
+                    strip.background = element_blank(),
+                    strip.text.x = element_text(size = 12)) 
+
+  
+  StartDate = as.Date(StartDate)
+  EndDate   = as.Date(EndDate)
+  
+  Data = WorldCOVIDdata(Country, StartDate, EndDate) %>% 
+    select(cases, deaths, date, country) %>% 
+    melt(id = c('date','country'))
+  
+  if (DateList != FALSE & DateInfo != FALSE){
+    Dates = data.frame( date = as.Date( DateList ), text = DateInfo ) 
+    
+    if (tickoffset == FALSE){
+      tickoffset = max(Data$value) / 40
+    }
+  }
+  
+  # Create plot using the above covid data using the custom theme
+  Plt = ggplot(Data) + 
+  geom_col(aes(date, value, group = variable, fill = variable), width = 1, colour = 'white') + PltTheme + 
+    # Change the colors to blue and red with alpha .4 and .9.
+  scale_fill_manual(values = alpha(c('dodgerblue','red'), c(.4,.9)),
+       labels = c('Cases','Deaths')) + 
+    # Make x axis dates
+    scale_x_date(expand = c(0.0, 0), labels = date_format("%d-%b"), date_breaks = dateBreaks, 
+                 limits = c(StartDate,  EndDate+1)) + 
+    # Place the legend - alter position via the relative position valued between 0 and 1.
+    theme( legend.direction = 'vertical', 
+          legend.position = c(.1,.9),
+          # Make dates on an 45 degree angle so you can read them if squished.
+          axis.text.x = element_text(angle=45, hjust = 1))
+  
+  if (Ymax == FALSE){
+        # Push the data against the y axis with no gap & set limit to max cases/deaths...
+      Plt = Plt + scale_y_continuous( expand = c(0, 0), limits = c(0,max(Data$value)*1.2) )
+  } else {
+    # Unless a max y value has been specified...
+      Plt = Plt + scale_y_continuous( expand = c(0, 0), limits = c(0,Ymax) )
+  }
+  
+  # Plot title
+  if (Title == FALSE){
+    Plt = Plt + labs( y = 'Frequency', x = 'Date') 
+  } else {
+    Plt = Plt + labs(title = Title, y = 'Frequency', x = 'Date') 
+  }
+  
+  # Add key dates to the plot if the data exists
+  if (DateList != FALSE & DateInfo != FALSE){
+    for (d in 1:nrow(Dates)){
+      Plt = Plt +
+        # add text as an annotation
+        annotate("text", x = Dates$date[d], y = tickoffset+(max(Data$value)/60), label = Dates$text[d], angle=90, color = 'black', size=Font, vjust=0+.25, hjust='left', fontface = "bold") +
+        # add the ticks as a geom segment black line. The below line of code ensures that the deaths are not covered over by this segment.
+        geom_segment(x = Dates$date[d], y =  max(Data$value)*.0033 + Data$value[(Data$date == Dates$date[d] & Data$variable == 'deaths')], yend = tickoffset, xend = Dates$date[d], color = 'gray10', size = 1, alpha = 0.5 )
+    }
+  }
+  
+  return(Plt)
+}  
+
+```
+
+Below I provide an example using the pltCases function. The function takes an input country, for example, 'Australia' or 'United_Kingdom', and plots the daily COVID-19 cases and deaths. If date and information vectors are provided, these are also overlaid on the plot. A title may be supplied as in the example below, and the Ymax (max ylim) may also be set.
+
+
+```{r}
+# Example using the pltCases function...
+
+# First a create a date list & and information list. I pulled these dates from a Google Sheet list created by our slack COVID research group.
+
+# The DateList and InfoList are vectors of equal size with a 1-to-1 mapping of date and event; the relative order of the date vector to the info vector is important, however, the order within each list does not matter.
+
+DateList =  c("2020-01-25", "2020-02-27", 
+              "2020-03-13", "2020-03-15",
+              "2020-03-21", "2020-03-23", 
+              "2020-03-26", "2020-03-31",
+              "2020-04-24", "2020-04-26", 
+              "2020-05-11", "2020-05-18",
+              "2020-04-10", '2020-05-20',
+              '2020-04-14', '2020-05-26')
+
+InfoList = c('1st case in Australia', 
+             'PM warns of possible pandemic', 
+             '1st community transmission. Gatherings are banned', 
+             'Mandatory isolation for overseas travelers',
+             'Ruby princess', 
+             'Stage 1 restrictions',
+             'Stage 2 restrictions', 
+             'Stage 3 restrictions',
+             'Any symptom COVID-19 testing', 
+             'COVIDSafe app launched',
+             'Lowering restrictions',
+             'First reported COVIDSafe contact tracing',
+             'Google/Apple API announced', 
+             'Google/Apple API launched',
+             'COVIDSafe app announced', 
+             'Australian human vaccine trials begin')
+
+# I then plot the cases for Australia between Jan 1st 2020 and May 29th 2020, 
+#   and include the date and info list. 
+# I also include information on the title but leave the other paramaters free.
+
+AustralianPlot = pltCases('Australia', '2020-01-01', '2020-05-29', DateList, InfoList, 
+                          'Australian COVID-19 Cases & Deaths')
+```
+
+The result from this single function call is pretty nice & quick, and it makes for a decent starting point to introduce how COVID-19 has affected each nation, for example, at the start of a paper or talk.
+```{r, fig.width = 10, fig.height= 5}
+AustralianPlot
+```
+
+
+In addition to this, for my work I have also augmented these plots with indicators of when we collected data: each 'wave' of collection. Below is an example of how I've done this in case anyone else wants to do something similar.
+
+```{r, fig.width = 10, fig.height= 5}
+# First create a place from which the dates can be sampled. My preference is a data frame.
+# The key detail here is to ensure the dates are entered 'as.Date' values. This way they
+#   can be added to the x axis in the correct position.
+Waves = data.frame( start = as.Date( c("2020-04-06", "2020-04-15", "2020-05-07")),
+                    end   = as.Date( c("2020-04-07", "2020-04-16", "2020-05-08")),
+                    text  = c('Wave 1','Wave 2','Wave 3'))
+
+# Add Dates of Data Collection
+for (d in 1:nrow(Waves)){
+  # Update plot for each wave...
+  AustralianPlot = AustralianPlot + 
+    # Annotate a transparent rectangle to show the collection time period
+  annotate("rect", xmin = Waves$start[d], xmax = Waves$end[d], ymin = 0, ymax = Inf, fill = 'green',  alpha = .25) +
+    # And then add text to the top of the figure - away from the other date text to keep things 'clean'.
+  annotate("text", x = Waves$start[d], y = Inf, label = Waves$text[d], angle=90, color = 'darkgreen', size=3, vjust=-.4, hjust='right', fontface = "bold")
+}
+
+# Plot the figure again...
+AustralianPlot
+```
+
+
+Here is another example where I apply the same functions to create the plot for cases and fatalities in Taiwan. Between these two examples, it should be relatively easy to reporduce any nation's cases - once you have the dates and related infomation. 
+
+```{r, fig.width = 10, fig.height= 5}
+
+DateList =  c("2020-01-21", "2020-02-23", 
+              "2020-01-26", "2020-01-28",
+              '2020-01-30', "2020-02-03",
+              '2020-02-07', '2020-02-11',
+              '2020-03-18', '2020-04-09',
+              '2020-04-11', '2020-04-19',
+              '2020-05-10', '2020-05-20')
+
+InfoList = c('1st case in Taiwan.', 
+             'Wuhan flight ban.', 
+             'Chinese students & tourists denied entry.',
+             'Monitoring devices enforce quarantine.',
+             'Mask factories expropriated.',
+             'School & University opening postponed.',
+             'Chinese travel ban.',
+             'Mask output increases to 1.7M per day.',
+             'Foreigners travel ban. Arrivals must quarantine.',
+             'Public gatherings & clubs banned.',
+             'Google/Apple API announced.',
+             '22 infected navy officers. SMS notify public to isolate.',
+             'Risk of infection deemed low by CECC.',
+             'Google/Apple API launched.')
+
+TaiwanPlot = pltCases('Taiwan', '2020-01-20', '2020-05-29', DateList, InfoList, 
+                          "Taiwan COVID-19 Cases & Deaths")
+
+TaiwanPlot
+```
+
+Finally, I'll plot the cases in a range of countries below. I won't bother with the dates this time - I just want a visualization - but hopefully you can see how these functions may be applied. I hope they can be of assistance to the team - either as they are or with modifications. Remember, these are GGplots so you can modify elements of the plot with an easy addition (see the plotting function for an example of how to add themed elements or look online where there are plenty of resources for this.)
+
+Cheers,
+Paul
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+USAplot = pltCases('United_States_of_America', '2020-03-01',
+                      Title = "USA COVID-19 Cases & Deaths")
+
+USAplot
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+UKplot = pltCases('United_Kingdom', '2020-03-01',
+                      Title = "UK COVID-19 Cases & Deaths")
+
+UKplot
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Germany = pltCases('Germany', '2020-03-01',
+                      Title = "German COVID-19 Cases & Deaths")
+
+Germany
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+switzerland = pltCases('Switzerland', '2020-03-01',
+                      Title = "Switzerland COVID-19 Cases & Deaths")
+
+switzerland
+```
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Sweden = pltCases('Sweden', '2020-03-01',
+                      Title = "Sweden COVID-19 Cases & Deaths")
+
+Sweden
+```
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Hungary = pltCases('Hungary', '2020-03-01',
+                      Title = "Hungary COVID-19 Cases & Deaths")
+
+Hungary
+```
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Brazil = pltCases('Brazil', '2020-03-01',
+                      Title = "Brazil COVID-19 Cases & Deaths")
+
+Brazil
+```
+
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Japan = pltCases('Japan', '2020-03-01',
+                      Title = "Japan COVID-19 Cases & Deaths")
+
+Japan
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# End date added as, at the time, daily cases were ~0.
+China = pltCases('China', '2020-01-16', '2020-04-20',
+                      Title = "China COVID-19 Cases & Deaths")
+
+ China
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Israel = pltCases('Israel', '2020-03-01',
+                      Title = "Israel COVID-19 Cases & Deaths")
+
+Israel
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Spain = pltCases('Spain', '2020-03-01',
+                      Title = "Spain COVID-19 Cases & Deaths")
+
+Spain
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+Italy = pltCases('Italy', '2020-02-20',
+                      Title = "Italy COVID-19 Cases & Deaths")
+
+Italy
+```
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+India = pltCases('India', '2020-02-20',
+                      Title = "India COVID-19 Cases & Deaths")
+
+India
+```
+
+
+```{r, fig.width = 10, fig.height= 5}
+# Note that no end date has been supplied so the function will default to the current date.
+SouthAfrica = pltCases('South_Africa', '2020-02-20',
+                      Title = "South Africa COVID-19 Cases & Deaths")
+
+SouthAfrica
+```
