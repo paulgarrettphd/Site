@@ -1,6 +1,6 @@
 ---
 title: "National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers"
-author: "Paul M. Garrett"
+author: "Paul M. Garrett. Complex Human Data Hub, the University of Melbourne."
 date: "29/5/2020"
 output: html_document
 ---
@@ -279,6 +279,8 @@ Finally, I'll plot the cases in a range of countries below. I won't bother with 
 
 Cheers,
 Paul
+
+cite: P. M. Garrett (2020). [National COVID Cases & Fatalities by Dates - Easy Functions for COVID-19 Researchers.](https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd) Retrieved from https://github.com/paulgarrettphd/Site/blob/master/presentations/studenteducation/NationalCOVIDbyDates.Rmd 
 
 ```{r, fig.width = 10, fig.height= 5}
 # Note that no end date has been supplied so the function will default to the current date.
