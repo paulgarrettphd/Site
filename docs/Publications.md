@@ -40,6 +40,10 @@ Tillman, G., Howard, Z., **Garrett, P.M.**, & Eidels, A. (2017). [The Stroop Eff
 ## <b> Presentations </b>
 ### Conference Presentations
 
+**Garrett, P. M.**, Dennis, S., & White, J. (2020). [Public perceptions of COVID-19 tracking technologies in Australia.](https://github.com/paulgarrettphd/Site/blob/master/presentations/talks/Public%20Perceptions%20of%20COVID-19%20Tracking%20Technologies%20.pptx) Melbourne school of psychological sciences School Colloquium. The University of Melbourne.
+
+**Garrett, P. M.**, Howard, Z., Bennett, M., Hsieh, Y-T., Yang, C-T., Little, D. R., & Eidles, A. (2020). [Symbolic wheel of fortune: Confusion analysis and the mental representations of digits across cultures.](https://github.com/paulgarrettphd/Site/blob/master/presentations/talks/Symbolic%20Wheel%20of%20Fortune.pptx) The annual meeting of the Australian mathematical society. Newcastle, Australia.
+
 **Garrett, P. M.**, Howard, Z., Houpt, J. W., Landy, D., & Eidles, A. (2019). The comparison of large and small item-sets. The annual meeting of the Australian mathematical society, Melbourne.
 
 **Garrett, P. M.**, Howard, Z., Houpt, J. W., Landy, D., & Eidles, A. (2018). [Estimating multiple item-sets: Harder than you think!](https://github.com/paulgarrettphd/Site/raw/master/presentations/talks/SPPC%20-%20Estimating%20Multiple%20Item-Sets.pptx) Sydney Postgraduate Psychology Conference, University of New South Wales. ***Winning presentation.***
