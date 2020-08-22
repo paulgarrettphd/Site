@@ -1,0 +1,965 @@
+---
+title: "United Kingdom Wave 3: Attitudes towards COVID-19 tracking technologies"
+author: "Stephan Lewandowsky, preliminary analysis by Paul M. Garrett"
+date: "22/8/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE, scipen=999999}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+shell('cls'); rm(list=ls())
+setwd('C:\\Users\\PGGARR\\Documents\\GitHub\\COVIDattitudes\\UK')
+select = dplyr::select
+# For BayesianFirstAid, download developer tools, JAGs for sampling, and then the package from git.
+# Developer tools: install.packages("devtools")
+# JAGs: https://sourceforge.net/projects/mcmc-jags/files/latest/download
+# BayesianFirstAid: devtools::install_github("rasmusab/bayesian_first_aid")
+
+# Load custom functions
+source('C:\\Users\\PGGARR\\Documents\\GitHub\\COVIDattitudes\\Functions.R')
+
+# Load packages via require: if any are missing, this will not error out but will be a problem later in the script. 
+lapply(c('tidyverse','expss','summarytools','ggplot2','rio','survey', 'parsedate','reshape2','scales', 'knitr','gridExtra','MCMCpack','dplyr','MCMCpack','ggsignif','ggpubr', 'BayesianFirstAid'),
+       require, character.only = TRUE)
+
+knitr::opts_chunk$set(echo = FALSE, warnings = FALSE, message = FALSE)
+
+# Load & Clean Data for only Australian Responses
+SData = CleanUKData('UK_Rdata.csv', 0)
+Data = SData$Data
+
+#PrimeCols = alpha( c('midnightblue', 'red', 'dodgerblue',  'gold'), .85)
+#PrimeCols2 = alpha( c('green4', 'orangered', 'purple4'), .85)
+WaveCols = alpha( c('deepskyblue2', 'royalblue2', 'orange', 'red'), .75)
+PrimeCols = WaveCols
+
+```
+
+The following provides a snapshot of the results from the thrid wave of data collected in the UK for the project 'establishing the social licence for tracking technologies'. Data was collected from August 10th - August 11th 2020. 
+
+# Background
+
+The COVID-19 pandemic caused by the severe acute respiratory coronavirus 2 (SARS-CoV-2) disease has changed how people live, work and socialise. In the absence of a vaccine or treatment, behavioral measures such as restricting public gatherings and physical distancing, masking wearing, lockdown policies and hand-washing have been employed to arrest the spread of the virus. The UK has been severely affected by COVID-19 (Figure 1). The highly transmittable and often asymptomatic nature of this virus (appx 15% of all cases) has required new technological solutions to curve its spread. Smartphone tracking technologies and immunity passports offer two such solutions. 
+
+```{r, fig.width = 10, fig.height= 5, fig.cap='Figure 1. UK COVID-19 Cases and deaths.'}
+NOW = as.Date('2020-08-20')
+START = as.Date( '2020-02-20' )
+
+UK = WorldCOVIDdata('United_Kingdom',
+                    StartDate = START, EndDate = NOW) %>%  
+  select(cases, deaths, date, country) %>% 
+  melt(id = c('date','country'))
+
+Waves = data.frame( start = as.Date( c("2020-08-10")),
+                    end   = as.Date( c("2020-08-11")),
+                    text  = c('Collection'))
+
+ft = 3.2
+p  = 15
+c  = 'sienna1'
+
+# Plot Cases & Deaths
+Plot = ggplot(UK) + 
+  geom_col(aes(date, value, group = variable, fill = variable), width = .8) + PltTheme + 
+  scale_fill_manual(values = alpha(c('dodgerblue','red'), c(.4,1)),
+       labels = c('Cases','Deaths')) + 
+  scale_y_continuous( expand = c(0, 1), limits = c(0,max(UK$value)*1.2) ) +
+    scale_x_date(expand = c(0.0, 0), labels = date_format("%d-%b"), date_breaks = "14 days", 
+                 limits = c(START,  NOW+1)) + 
+    theme( legend.direction = 'vertical', 
+          legend.position = c(.1,.9),
+          axis.text.x = element_text(angle=45, hjust = 1)) + 
+  labs(title = 'COVID-19 cases & deaths in the UK', y = 'Frequency', x = 'Date', size = 14) 
+
+# Add Data collectiond dates.
+for (d in 1:nrow(Waves)){
+  Plot = Plot + 
+  annotate("rect", xmin = Waves$start[d], xmax = Waves$end[d], ymin = 0, ymax = Inf, fill = 'green',  alpha = .25) +
+  annotate("text", x = Waves$start[d], y = Inf, label = Waves$text[d], angle=90, color = 'darkgreen', size=4, vjust=-.4, hjust='right', fontface = "bold")
+}
+
+Plot
+
+```
+
+In this study, we asked a sample of the UK public about their perceptions of the COVID-19 pandemic, their perceptions about their Government (and other Governments) responses to the pandemic, their attitudes towards and uptake of a yet-to-be released contact tracing app, and their attitudes towards the introduction of an immunity passport. The questions and results are as follows.
+
+# Data Analysis
+Bayesian ordinal probit regressions were used to compare Likert-style responses using the MCMCoprobit and HPDinterval functions in R, taken from the MCMCpack (Martin, Quinn and Park, 2011) and Coda (Plummer, Best, Cowles and Vines, 2006) packages, respectively. Bayesian credible intervals were calculated for binomial distributions (e.g., yes or no responses), using the bayes.prop.test function from the BayesianFirstAid package (Bååth, 2014).
+
+These Bayesian methods sample a posterior distribution of plausible means (the probability that, given our data, the true population mean is x), by weighing the likelihood of a given observation against its prior probability of occurring in the sample. Under simple parametric assumptions about the posterior distribution, these posterior distributions act to constrain the effect of outliers in the tails of the sampled data, and allow the highest region of data density — credible regions of the data distribution — to inform policy decisions. Practically, this means instead of testing a threshold of significance (like p-values), we may instead directly compare the 95% credible regions of the data distributions to determine if they do not overlap, and therefore, differ in a significantly meaningful fashion.
+
+The MCMCoprobit function was run with 20,000 Markov Chain Monte Carlo (MCMC) iterations (including 1000 burn-ins) and a tuning parameter of 0.3 (corresponding to the size of the Metropolis-Hastings step). Default priors were used for all parameters (i.e., the distributional mean and the cutpoints), corresponding to a uniform improper prior for both the mean and the cutpoints. The bayes.prop.test function was run with 20,000 MCMC iterations (including 1000 burn-ins). Default priors were again used: a beta distribution with parameters of α = 1 and β = 1, corresponding to a uniform prior over the range [0, 1]. Ninety-five percent highest posterior density intervals (HPDIs) were estimated on the resulting posterior samples, and significant differences between items were decided where the HPDIs did not overlap. 
+
+## Participants
+```{r}
+Cleaning = SData$CleaningProcedure %>% select(-RemovedDuplicate, -RemovedCountry) 
+colnames(Cleaning) = c('Initial Sample','Under 18','Failed Attention Check', 'Incomplete', 'Final Sample')
+CleaningTable = kable(Cleaning, caption = 'Table 1. Participant selection procedure for data collection.')
+
+Gender = Per(Data$Data$gender,2)
+```
+
+We sampled `r Cleaning[1,1]` UK residents who were screened for being aged 18 or older, for passing a scenario comprehension 'attention check', and for completing the survey (see Table 1). The final participant sample was `r Cleaning[1,5]` (`r Gender[1]`% female). Participants most frequently reported having a university education (`r Per(Data$education, 4)`%) and ages ranged from `r min(Data$Age)` years to `r max(Data$Age)` years (M = `r mean(Data$Age)`, SD = `r sd(Data$Age)` years.) Ages were roughly uniformly distributed between 20 - 70 years, and under represented for years 70+ (see Figure 2).
+
+Of `r Cleaning[5]` participants, `r sum(Data$COVID_pos_other==1,na.rm=T)` participants (`r Per(Data$COVID_pos_other,1)`%) indicated that they knew someone who had tested positive with COVID-19, and (`r Per(Data$smartphoneuse,1)`%) owned a smartphone.
+
+```{r}
+CleaningTable
+```
+```{r}
+cro_tpct(Data$gender) %>% set_caption("Gender identification: Percentages") %>% rename(Percent = `#Total`)
+```
+
+
+```{r}
+cro_tpct(Data$education) %>% set_caption("Level of education: Percentages")  %>% rename(Percent = `#Total`)
+```
+
+```{r,fig.cap = "Figure 2. Age bins over the UK sample."}
+ggplot(Data, aes(x=Agebins)) + geom_bar( fill = 'royalblue' ) + 
+  PltTheme + labs(title = 'Age distribution', x = 'UK Age Bins', y = 'Frequency') + 
+  scale_y_continuous(expand = c(0, 0))
+```
+
+
+
+# Results
+## COVID-19 Infomation Sources
+
+Participants were asked from what sources they receive their information about COVID-19, and how much they trust these sources. Responses were made on a 5 point likert scale. The questions read:
+
+  1. How often do you consult the following sources for information on the COVID-19 pandemic?
+  2. How confident are you in the following sources for correct information about the COVID-19 pandemic?
+  
+Figure 3.a displays the likert-style response distributions classifying which informaton source participants received COVID-19 information from (light blue), and the level of trust they have in these sources (dark blue). Figure 3.b displays the mean posterior distribution from a bayesian ordinal regression conducted separately for each item. Error bars are 95% highest density intervals and significant differences within the measures of information source or level of trust can be determed by where the error bars do not overlap.
+
+Results show that participants recieved most of their COVID-19 information from the TV, frends/family, and government announcements, followed news media, then raido and social networks, and finally other sources. 
+
+Partcipants trusted Friends and Family, TV, and Government Annoucements most, followed by Radio and News media, and finally social networks. 
+
+```{r,fig.width = 8, fig.height= 6, fig.cap = "Figure 3. a) Likert-style responses classifying which informaton source participants received COVID-19 information from, and the level of trust they have in these sources. b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals. Significant differences within measures of source or trust can be determined where error bars do not overlap."}
+info = c('News Print/\nOnline', 'Social\nNetworks', 'Friends &\nFamily', 'Radio', 'TV', 'Gov\nAnnouncements', 'Other')
+InfoS = gather( Data %>% select(starts_with('COVID_info_source'))) %>% mutate(Id = 'COVID Info Source')
+InfoT = gather( Data %>% select(starts_with('COVID_info_trust'))) %>% mutate(Id = 'Level of Trust')
+
+for (ii in 1:7){
+  InfoS$key[InfoS$key == unique(InfoS$key)[ii]] = info[ii]
+  InfoT$key[InfoT$key == unique(InfoT$key)[ii]] = info[ii]
+}
+
+Info = rbind(InfoS, InfoT)
+Info$key = factor(Info$key, levels = c('News Print/\nOnline', 'Social\nNetworks', 'Friends &\nFamily', 'Radio', 'TV', 'Gov\nAnnouncements', 'Other'))
+
+X = unique(Info[,c(1,3)])
+
+Info$M = rep(0, nrow(Info))
+Info$S = rep(0, nrow(Info))
+Info$Cmin = rep(0, nrow(Info))
+Info$Cmax = rep(0, nrow(Info))
+Info$HDPImin = rep(0, nrow(Info))
+Info$HDPImax = rep(0, nrow(Info))
+for (ii in 1:nrow(X)){
+  CoD = Info %>% filter(Id == X$Id[ii] &
+                          key == X$key[ii])
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx = Info$Id == X$Id[ii] &
+        Info$key == X$key[ii]
+  Info$M[Idx] = MCMCs$statistics[1,1]
+  Info$S[Idx] = MCMCs$statistics[1,2]
+  Info$Cmin[Idx] = MCMCs$quantiles[1,1]
+  Info$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  Info$HDPImin[Idx] = HDPI[1,1]
+  Info$HDPImax[Idx] = HDPI[1,2]
+}
+
+p1 = ggplot(Info, aes(x = key, y = value, fill = Id)) + 
+  geom_boxplot() + PltTheme  +
+  theme(   legend.key = element_rect(fill = "white")) + 
+  scale_fill_manual(values = WaveCols ) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:5, limits = c(1, 5), labels = c('None','A little','Some','A lot','Total')) + 
+  labs(title = 'COVID Information Sources & Level of Trust')
+
+# Regression Plots
+p2 = ggplot(Info, aes(x = key, y = M, group = Id, fill = Id)) +
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key, group = Id),
+                  position = position_dodge(.75), width = .5, size = .75) +  
+  geom_point(size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) + 
+  scale_fill_manual(values = WaveCols ) + PltTheme + 
+    scale_color_manual(values = WaveCols ) + 
+    ylab('Posterior means') + xlab('') + 
+    scale_y_continuous(expand = c(.0, .1), breaks = -1:5, limits = c(-1, 2)) + 
+    #labs(title = 'Perceived risk from COVID-19') + 
+    theme( legend.direction = 'horizontal', 
+           legend.position = c(.5,-.23), 
+           #plot.margin=unit(c(0,0,1.2,1),"cm"),
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) 
+
+A = ggarrange(p1, p2, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="bottom")
+A  
+
+```
+
+## Perceived risk from COVID-19
+Particiants were then asked:
+
+  1. How severe do you think novel coronavirus (COVID-19) will be for the general population? [General harm]
+  2. How harmful would it be for your health if you were to become infected COVID-19? [Personal harm]
+  3. How concerned are you that somebody you know might become infected with COVID-19? [Concern others]
+  
+Results are displayed in Figure 4.
+
+
+```{r,fig.width = 8, fig.height= 6, fig.cap = "Figure 4. COVID-19 Severity for the general population and one's self. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+CoVars = gather(Data %>% select(c(COVID_gen_harm,COVID_pers_harm,COVID_concern_oth)), 
+                key = 'key', value = 'value', COVID_gen_harm,COVID_pers_harm,COVID_concern_oth)
+
+CoVars$key = factor(CoVars$key,labels=c("General\nharm","Personal\nharm","Concern\nothers"))
+
+X = unique(CoVars$key)
+
+CoVars$M = rep(0, nrow(CoVars))
+CoVars$S = rep(0, nrow(CoVars))
+CoVars$Cmin = rep(0, nrow(CoVars))
+CoVars$Cmax = rep(0, nrow(CoVars))
+CoVars$HDPImin = rep(0, nrow(CoVars))
+CoVars$HDPImax = rep(0, nrow(CoVars))
+for (ii in 1:length(X)){
+  CoD = CoVars %>% filter(key == X[ii])
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx =  CoVars$key == X[ii]
+  CoVars$M[Idx] = MCMCs$statistics[1,1]
+  CoVars$S[Idx] = MCMCs$statistics[1,2]
+  CoVars$Cmin[Idx] = MCMCs$quantiles[1,1]
+  CoVars$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  CoVars$HDPImin[Idx] = HDPI[1,1]
+  CoVars$HDPImax[Idx] = HDPI[1,2]
+
+}
+
+# Raw data plots
+g2 = ggplot(CoVars, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white")) + 
+  scale_fill_manual(values = WaveCols ) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:5, limits = c(1, 5), labels = c('None','Slight','Some','Very','Extr')) + 
+  labs(title = 'Perceived risk from COVID-19')
+
+# Regression Plots
+g = ggplot(CoVars, aes(x = key, y = M, fill = key)) +
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .25, size = .75) +  
+  geom_point(size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) + 
+  scale_fill_manual(values = WaveCols ) + PltTheme + 
+    scale_color_manual(values = WaveCols ) + 
+    ylab('Posterior means') + xlab('') + 
+    scale_y_continuous(expand = c(.0, .1), breaks = 1:5, limits = c(0.9, 3),
+                       labels = c('1','2','3','4','5')) + 
+    #labs(title = 'Perceived risk from COVID-19') + 
+    theme( legend.direction = 'horizontal', 
+           legend.position = c(.5,-.23), 
+           #plot.margin=unit(c(0,0,1.2,1),"cm"),
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) 
+
+
+B = ggarrange(g2, g, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="none")
+B
+```
+
+We asked participants to report their estimates on the number of fatalities across a range of countries with moderate-to-high media coverage in the UK. Responses were made on a sliding scale ranging from 0 - 200,000; results are reported in estimated deaths per 1000 (Figure 5).
+
+```{r, fig.cap = "Figure 5. COVID fatality estimates for a range of countries."}
+# 2020-08-08 - 2020-08-12
+Data = SData$Data
+WC = WorldCOVIDdata(c('Australia', 'United_Kingdom', 'United_States_of_America', 
+                       'Germany', 'China','Italy','Singapore','South_Korea','Spain'),
+                    StartDate = '2020-03-10', EndDate = '2020-08-16')
+
+Countries = c('Australia','China','Germany','Italy','Singapore','South_Korea', 'Spain', 'United_States_of_America', 'United_Kingdom')
+WorldSubset = subset(WC, country %in% Countries) %>% filter(date == '2020-08-10')
+WorldSubset$country = factor(WorldSubset$country, levels = c('Australia','China','Germany','Italy','Singapore','South_Korea', 'Spain', 'United_States_of_America', 'United_Kingdom'))
+#WorldSubset = WorldSubset[c(1:7,9,8),]
+
+names(Data)[names(Data)=='COVID_fatalities_1'] = 'Australia'
+names(Data)[names(Data)=='COVID_fatalities_2'] = 'China'
+names(Data)[names(Data)=='COVID_fatalities_3'] = 'Germany'
+names(Data)[names(Data)=='COVID_fatalities_4'] = 'Italy'
+names(Data)[names(Data)=='COVID_fatalities_5'] = 'Singapore'
+names(Data)[names(Data)=='COVID_fatalities_6'] = 'SK'
+names(Data)[names(Data)=='COVID_fatalities_7'] = 'Spain'
+names(Data)[names(Data)=='COVID_fatalities_8'] = 'US'
+names(Data)[names(Data)=='COVID_fatalities_9'] = 'UK'
+
+Fatalities = gather( Data %>% select( Australia, China, Germany, Italy, Singapore, SK, Spain, US, UK ), factor_key = TRUE )
+Fatalities$value = Fatalities$value / 1000
+
+ggplot(Fatalities, aes(x = key, y = value), trim = FALSE) +
+  geom_violin(aes(fill = key), scale = 'width') + 
+  geom_boxplot(width=0.08, fill = 'gray') +
+  geom_point(data = WorldSubset, mapping = aes(x = c(1:7,9,8), y = deaths.cum/1000), color = 'red', size = 3, alpha = .66) +
+  labs(title = 'Estimated Fatalities by Country', x = '', y = 'Deaths x 1000') +
+  scale_x_discrete(labels=c('Australia','China','Germany','Italy','Singapore','S.Korea', 'Spain', 'U.S.A', 'U.K')) +
+  PltTheme + theme(legend.position = "none", axis.text.x = element_text(angle = 90)) + 
+  annotate("text", x = 9.4, y = 140, label = 'True Value 10/08/2020', angle = 90, color = 'red') + 
+  ylim(c(0,200))
+```
+
+## Assessments of the Government's response to COVID-19
+
+Participants were asked to determine how helpful Government guidelines have been during the COVID-19 pandemic. The questions were:
+
+  1. How well do you feel you understand the government guidelines on measures to combat the COVID-19 pandemic?
+  2. How useful are government guidelines in deciding how to act in relation to the COVID-19 pandemic?
+  
+Results are shown in Figure 6.
+
+```{r,fig.width = 6, fig.height= 5, fig.cap = "Figure 6. Assessments of Government guidelines. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+Data = SData$Data
+
+Resp = gather( Data %>%  select( Gov_understand, Gov_helpful ), factor_key = TRUE )
+
+g = ggplot(Resp, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white")) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:5, limits = c(1, 5), labels = c('None','Slight','Some','Very','Exteme')) + 
+  labs(title = 'Perceptions of Goverment Guidelines') + 
+  scale_x_discrete(labels=c('Understand','Useful'))
+  
+
+X = unique(Resp$key)
+
+Resp$M = rep(0, nrow(Resp))
+Resp$S = rep(0, nrow(Resp))
+Resp$Cmin = rep(0, nrow(Resp))
+Resp$Cmax = rep(0, nrow(Resp))
+Resp$HDPImin = rep(0, nrow(Resp))
+Resp$HDPImax = rep(0, nrow(Resp))
+for (ii in 1:length(X)){
+  CoD = Resp %>% filter(key == X[ii])
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx =  Resp$key == X[ii]
+  Resp$M[Idx] = MCMCs$statistics[1,1]
+  Resp$S[Idx] = MCMCs$statistics[1,2]
+  Resp$Cmin[Idx] = MCMCs$quantiles[1,1]
+  Resp$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  Resp$HDPImin[Idx] = HDPI[1,1]
+  Resp$HDPImax[Idx] = HDPI[1,2]
+
+}
+
+# Regression Plots
+g2 = ggplot(Resp, aes(x = key, y = M, fill = key)) +
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .25, size = .75) +  
+  geom_point(size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) + 
+    ylab('Posterior means') + xlab('') + PltTheme + 
+    scale_y_continuous(expand = c(.0, .1), breaks = -1:5, limits = c(1, 2)) + 
+    theme( legend.direction = 'horizontal', 
+           legend.position = c(.5,-.23), 
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) + 
+  scale_x_discrete(labels=c('Understand','Useful'))
+  
+
+P = ggarrange(g, g2, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="none")
+P
+
+
+```
+
+Participants were asked "Overall, how well do you think the governments of the following countries have managed the COVID-19 pandemic so far?" Responses were made on 5 point likert-scale ranging from 'not good' to 'extremely good' and are displayed in Figure 7.
+
+```{r,fig.width = 9, fig.height= 6, fig.cap = "Figure 7. Perceived government's response to the COVID-19 pandemic in a range of countries."}
+Data = SData$Data
+
+names(Data)[names(Data)=='COVID_govresponse_1'] = 'Australia'
+names(Data)[names(Data)=='COVID_govresponse_2'] = 'China'
+names(Data)[names(Data)=='COVID_govresponse_3'] = 'Germany'
+names(Data)[names(Data)=='COVID_govresponse_4'] = 'Italy'
+names(Data)[names(Data)=='COVID_govresponse_5'] = 'Singapore'
+names(Data)[names(Data)=='COVID_govresponse_6'] = 'S.Korea'
+names(Data)[names(Data)=='COVID_govresponse_7'] = 'Spain'
+names(Data)[names(Data)=='COVID_govresponse_8'] = 'US'
+names(Data)[names(Data)=='COVID_govresponse_9'] = 'UK'
+
+Resp = gather( Data %>% select( Australia, China, Germany, Italy, Singapore, S.Korea, Spain, US, UK ), factor_key = TRUE )
+Resp$value[Resp$value == 21] = 1
+Resp$value[Resp$value == 22] = 2
+Resp$value[Resp$value == 23] = 3
+Resp$value[Resp$value == 24] = 4
+Resp$value[Resp$value == 25] = 5
+
+g = ggplot(Resp, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white")) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:5, limits = c(1, 5), labels = c('Not Good','Slight','Some','Very','Ext Good')) + 
+  labs(title = 'Perceived Government response to COVID-19')
+  
+
+X = unique(Resp$key)
+
+Resp$M = rep(0, nrow(Resp))
+Resp$S = rep(0, nrow(Resp))
+Resp$Cmin = rep(0, nrow(Resp))
+Resp$Cmax = rep(0, nrow(Resp))
+Resp$HDPImin = rep(0, nrow(Resp))
+Resp$HDPImax = rep(0, nrow(Resp))
+for (ii in 1:length(X)){
+  CoD = Resp %>% filter(key == X[ii])
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx =  Resp$key == X[ii]
+  Resp$M[Idx] = MCMCs$statistics[1,1]
+  Resp$S[Idx] = MCMCs$statistics[1,2]
+  Resp$Cmin[Idx] = MCMCs$quantiles[1,1]
+  Resp$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  Resp$HDPImin[Idx] = HDPI[1,1]
+  Resp$HDPImax[Idx] = HDPI[1,2]
+
+}
+
+# Regression Plots
+g2 = ggplot(Resp, aes(x = key, y = M, fill = key)) +
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .25, size = .75) +  
+  geom_point(size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) + 
+    ylab('Posterior means') + xlab('') + PltTheme + 
+    scale_y_continuous(expand = c(.0, .1), breaks = -1:5, limits = c(-1.1, 2.3)) + 
+    theme( legend.direction = 'horizontal', 
+           legend.position = c(.5,-.23), 
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) 
+  
+
+G = ggarrange(g, g2, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="none")
+G
+
+```
+
+
+# Perceptions of COVID-19 Tracking Technologies
+
+Participants were presented with a scenario description of a yet to be released Government app for tracking the spread of COVID-19 in the UK. The scenario description was:
+
+"The COVID-19 pandemic has rapidly become a worldwide threat. Containing the virus’ spread is essential to minimise the impact on the healthcare system, the economy, and save many lives. The Government may soon roll out a contact tracing app for existing smartphones to help inform people if they have been exposed to others with COVID-19. The app uses Apple and Google’s technology, and would help reduce community spread of COVID-19 by allowing people to voluntarily self-isolate.    When two people are near each other, their phones would connect via bluetooth and exchange randomly generated codes. If a person is later identified as being infected, the people they have been in close proximity to are then notified without the government knowing who they are. Both the use of the app and the communication of a possible infection would be completely voluntary. People who are notified would not be informed who had tested positive. None of the app users can be identified or located because the app doesn’t request, use, or store personal data, and the movements of users are not tracked in any case."
+
+Immediately following this scearnio, participants were asked a scenario comprehension (attention) check before being asked two related questions:
+
+  1. "If, as depicted in this scenario, the government provided a COVID-19 contact tracing app, would you use it? " 
+  2. "I would willingly download and use another country's COVID-19 tracking app if it were a condition to travel to that country."
+  
+`r Per(Data$bluetooth_uptake1_bt,1)`% of participants indicated they would accept, download and use the described tracking app. Furthermore, `r Per(Data$othercountryapp >= 6,1)`% agreed or strongly-agreed to download and use another country's tracking app if it were a condition to travel to that country.
+
+```{r}
+Data = SData$Data
+l = c('S.Disagree','Disagree','Somewhat.D','Neither','Somewhat.A', 'Agree', 'S.Agree')
+for (ii in 1:7){
+  Data$othercountryapp[Data$othercountryapp==ii] = l[ii]
+}
+Data$othercountryapp = factor(Data$othercountryapp, levels = c('S.Disagree','Disagree','Somewhat.D','Neither','Somewhat.A', 'Agree', 'S.Agree'))
+cro_tpct(Data$othercountryapp) %>% set_caption("Other Country App Acceptance: Percentages") %>% rename(Percent = `#Total`)
+Data = SData$Data
+```
+
+
+These questions were immediately followed by items probing participant's attitudes towards the risks and benefits of using of the proposed app. For plotting purposes, the benefits and risks of the proposed app will be presented separately.
+
+Figure 8 displays responses to the following items assessing the beneifts of the proposed tracking technology:
+
+  1. In this scenario, how confident are you that the contact tracing app would reduce the likelihood of you getting COVID-19? [Reduce contraction]
+  2. In this scenario, how confident are you that the contact tracing application would help you resume normal activities more quickly? [Reduce spread]
+  3. In this scenario, how confident are you that the contact tracing app would reduce the spread of COVID-19 in your community? [Resume activities]
+
+```{r,fig.width = 6.5, fig.height= 5.5, fig.cap = "Figure 8. Perceived benefits of tracking technologies. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+# Combine Waves, select only data for plotting, and add factor levels to fix plot order...
+D = Data
+
+RedLik = gather(D %>% select( starts_with('reduce_lik')), key = 'key', value = 'value', factor_key = TRUE); RedLik$key = 'Reduce contraction'
+RedSpr = gather(D %>% select( starts_with('reduce_spr')), key = 'key', value = 'value', factor_key = TRUE); RedSpr$key = 'Reduce spread'
+RetAct = gather(D %>% select( starts_with('return')),     key = 'key', value = 'value', factor_key = TRUE); RetAct$key = 'Resume activities'
+D = rbind(RedLik, RedSpr, RetAct )
+
+# Remove NAs
+D %<>% filter(!is.na(value))
+# Get conditional means for inspection
+M <- D %>% 
+        group_by( key ) %>% 
+        summarise( Means = mean(value, na.rm = T) )
+
+# Preallocate vectors
+D$M = rep(0, nrow(D))
+D$S = rep(0, nrow(D))
+D$Cmin = rep(0, nrow(D))
+D$Cmax = rep(0, nrow(D))
+D$HDPImin = rep(0, nrow(D))
+D$HDPImax = rep(0, nrow(D))
+# Add Ordinal regression output to Conditional combinations
+#   of scenario and key (assessment item).
+for (ii in 1:nrow(M)){
+  # Subset data
+  CoD = D[D$key == M$key[ii],]
+  
+  # Ordinal regression
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  # Stats
+  MCMCs = summary(MCMCd)
+  # Index to put back in dataframe
+  Idx = D$key == M$key[ii]
+  # Add Mean, SD, Interval Min.Max, HDPI Min.Max
+  D$M[Idx] = MCMCs$statistics[1,1]
+  D$S[Idx] = MCMCs$statistics[1,2]
+  D$Cmin[Idx] = MCMCs$quantiles[1,1]
+  D$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  D$HDPImin[Idx] = HDPI[1,1]
+  D$HDPImax[Idx] = HDPI[1,2]
+}
+
+g = ggplot(D) + 
+  # Add error bars under the geom point using HDPI Min.Max
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .25, size = .75) +
+  # Add geom point for the mean
+  geom_point(aes(x = key, y = M, fill = key), size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) +
+  # Color the point
+  scale_fill_manual(values = PrimeCols ) + PltTheme + 
+  scale_color_manual(values = PrimeCols ) + 
+  # Add theme + push legend under the plotting space
+  theme( legend.direction = 'horizontal', 
+           #legend.position = c(.5,-.15), 
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) + 
+  # Fix the y-axis to look good
+  scale_y_continuous( expand = c(0, 0), breaks = seq(0,6,by=1), limits = c(0, 2)) + 
+  # Add titles
+  labs(x = '',y = 'Posterior means') 
+
+
+g2 = ggplot(D, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white")) + 
+  scale_fill_manual(values = PrimeCols ) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:6, limits = c(1, 6), labels = c('None','Slight','A bit','Mod','A lot', 'Extr')) + 
+  labs(title = 'Perceived benefits from tracking')
+
+C = ggarrange(g2, g, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="bottom")
+C  
+```
+
+Figure 9 displays responses to the following items assessing the perceived risks and harms of downloading the proposed tracking technology.
+
+  1. In this scenario, how confident are you that you and others like you would be able to use the contact tracing application effectively?
+  2. In this scenario, how easy is it for people to refuse to participate in the contact tracing system?
+  3. In this scenario, to what degree would only the data necessary to meet the contact tracing objectives be collected?
+  4. In this scenario, how sensitive is the data collected by the contact tracing application?
+  5. In this scenario, how serious is the risk of harm that may arise from the contact tracing application?
+  6. In this scenario, how confident are you that the government uses the tracking data only to deal with the COVID-19 pandemic?
+  7. In this scenario, how confident are you that the government uses the tracking data only to deal with the COVID-19 pandemic?
+  8. In this scenario, how secure is the data collected by the contact tracing application?
+  9. In this scenario, to what extent do people have permanent control of their data?
+
+```{r,fig.width = 10, fig.height= 7, fig.cap = "Figure 9. Perceptions of tracking technology risks. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+D = Data %>% select(starts_with('ability'), starts_with('decline'), starts_with('proport'), starts_with('sens'),
+                    starts_with('risk_of'), starts_with('trust_'), starts_with('data_sec'), starts_with('ongo')  )
+
+D1 = gather(D %>% select( starts_with('abili')),key = 'key',value = 'value', factor_key = TRUE); D1$key = 'Usable'
+D2 = gather(D %>% select( starts_with('decline')),key = 'key',value = 'value', factor_key = TRUE); D2$key = 'Difficult\nDecline'
+D3 = gather(D %>% select( starts_with('prop')),key = 'key',value = 'value', factor_key = TRUE); D3$key = 'Necessary\nData'
+D4 = gather(D %>% select( starts_with('sens')),key = 'key',value = 'value', factor_key = TRUE); D4$key = 'Sensitive\nData'
+D5 = gather(D %>% select( starts_with('risk')), key = 'key',value = 'value', factor_key = TRUE); D5$key = 'Risk'
+D6 = gather(D %>% select( starts_with('trust_intent')),key = 'key',value = 'value', factor_key = TRUE); D6$key = 'Trust\nIntentions'
+D7 = gather(D %>% select( starts_with('trust_respec')), key = 'key',value = 'value', factor_key = TRUE); D7$key = 'Trust\nPrivacy'
+D8 = gather(D %>% select( starts_with('data_sec')),key = 'key',value = 'value', factor_key = TRUE); D8$key = 'Data\nSecurity'
+D9 = gather(D %>% select( starts_with('ongo')),key = 'key',value = 'value', factor_key = TRUE); D9$key = 'Ongoing\nControl'
+
+
+D = rbind(D1, D2, D3, D4, D5, D6, D7, D8, D9)
+#D$Scenario = factor(D$Scenario, levels = c('Telecommunication', 'Bluetooth', 'Government App', 'COVIDSafe'))
+D$key = factor(D$key, levels = c('Usable', 'Difficult\nDecline', 'Necessary\nData', 'Sensitive\nData', 'Trust\nIntentions', 'Trust\nPrivacy', 'Data\nSecurity','Risk', 'Ongoing\nControl'))
+D %<>% filter(!is.na(value))
+
+
+M <- D %>% 
+        group_by( key ) %>% 
+        summarise( Means = mean(value, na.rm = T) )
+
+D$M = rep(0, nrow(D))
+D$S = rep(0, nrow(D))
+D$Cmin = rep(0, nrow(D))
+D$Cmax = rep(0, nrow(D))
+D$HDPImin = rep(0, nrow(D))
+D$HDPImax = rep(0, nrow(D))
+for (ii in 1:nrow(M)){
+  CoD = D[D$key == M$key[ii],]
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx = D$key == M$key[ii]
+  D$M[Idx] = MCMCs$statistics[1,1]
+  D$S[Idx] = MCMCs$statistics[1,2]
+  D$Cmin[Idx] = MCMCs$quantiles[1,1]
+  D$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  D$HDPImin[Idx] = HDPI[1,1]
+  D$HDPImax[Idx] = HDPI[1,2]
+}
+
+g = ggplot(D) + 
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .25, size = .75) +
+  geom_point(aes(x = key, y = M, fill = key), size = 4, shape = 22, stroke = 0, position = position_dodge(.75)) + PltTheme + 
+  theme( legend.direction = 'horizontal', 
+           #legend.position = c(.5,-.45), 
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white") )+
+           #axis.text.x = element_text(angle=45, hjust = 1)) + 
+  scale_y_continuous( expand = c(0, 0), breaks = seq(0,6,by=1), limits = c(-.3, 2.2)) + 
+  labs(x = '',y = 'Posterior means')
+
+g2 = ggplot(D, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white"))+
+           #axis.text.x = element_text(angle=45, hjust = 1)) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:6, limits = c(1, 6), labels = c('None','Slight','A bit','Mod','A lot', 'Extr')) + 
+  #scale_x_discrete(labels = c('','','','','','','','','')) + 
+  labs(title = 'Perceptions of tracking technology risks')
+
+E = ggarrange(g2, g, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="none")
+E
+
+```
+
+## Mask usage
+
+Participants were then asked about the effectiveness of masks and what the UK government policies are regarding their use. Questions and results are presented below:
+
+  1. How often have you worn a mask while going out in the past week?
+  2. In your opinion, can wearing of masks by the public effectively reduce the spread of COVID-19?
+  3. To your knowledge, what is the latest government advice/guidance with regard to wearing face masks? (Select all that apply)
+
+```{r}
+Data = SData$Data
+l = c('Almost never','When legally required','Certain occasions: Crowds or confined spaces','Always')
+for (ii in 1:4){
+  Data$Mask_often[Data$Mask_often==ii] = l[ii]
+}
+Data$Mask_often = factor(Data$Mask_often, levels = c('Almost never','When legally required','Certain occasions: Crowds or confined spaces','Always'))
+cro_tpct(Data$Mask_often) %>% set_caption("Masks reduce COVID spread: Percentages") %>% rename(Percent = `#Total`)
+Data = SData$Data
+```
+
+
+```{r}
+Data = SData$Data
+l = c('S.Disagree','Disagree','Somewhat.D','Neither','Somewhat.A', 'Agree', 'S.Agree')
+for (ii in 1:7){
+  Data$Masks_work[Data$Masks_work==ii] = l[ii]
+}
+Data$Masks_work = factor(Data$Masks_work, levels = c('S.Disagree','Disagree','Somewhat.D','Neither','Somewhat.A', 'Agree', 'S.Agree'))
+cro_tpct(Data$Masks_work) %>% set_caption("Masks reduce COVID spread: Percentages") %>% rename(Percent = `#Total`)
+Data = SData$Data
+```
+  
+```{r, fig.width = 8, fig.height= 6, fig.cap = "Figure 10. Mask policy beliefs. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+MaskPolicy = do.call(paste, c(as.list(Data$Masks_policy), sep = ','))
+MaskPolicy = as.numeric(unlist(strsplit(MaskPolicy, ",")))
+MaskPolicy = data.frame('value' = MaskPolicy[!is.na(MaskPolicy)])
+
+MaskPolicy$key = ''
+Policies = c('Public Transport', 'Outdoor spaces','Stores', 'Restaurants: Eat In', 'Restaurants: Take away', 'Cinemas/Theatres', 'Gyms', 'Always Recommend')
+MaskPolicy$Percent
+for (ii in min(MaskPolicy$value, na.rm=T):max(MaskPolicy$value, na.rm=T)){
+  MaskPolicy$key[MaskPolicy$value==ii] = Policies[ii-1]
+}
+MaskPolicy$key = factor(MaskPolicy$key, levels = c('Stores','Public Transport','Cinemas/Theatres','Restaurants: Take away','Gyms', 'Always Recommend', 'Restaurants: Eat In', 'Outdoor spaces'))
+
+
+ggplot(MaskPolicy, aes(x=key)) + geom_bar( fill = 'royalblue' ) + 
+  PltTheme + labs(title = 'Mask Policy Beliefs', x = 'Policies', y = 'Frequency') + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  theme(axis.text.x = element_text(angle = 35, vjust = 1, hjust =1))
+
+
+```
+
+
+## Belief in science
+Participant's answered two items about their perceptions on the role of science in their lives:
+
+  1. Science and technology are making our lives healthier, easier, and more comfortable.
+  2. Because of science and technology, there will be more opportunities for the next generation
+
+```{r,fig.width = 8, fig.height= 6, fig.cap = "Figure 11. Beliefs in science. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+Data = SData$Data
+
+Resp = gather( Data %>%  select( sci_betterlives, sci_nextgenopp ), factor_key = TRUE )
+
+g = ggplot(Resp, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white")) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:7, limits = c(1, 7), labels = c('S.Disagree','Disagree','Somewhat.D','Neither','Somewhat.A', 'Agree', 'S.Agree')) + 
+  labs(title = 'Beliefs in Science') + 
+  scale_x_discrete(labels=c('Better Lives','Next Gen'))
+
+X = unique(Resp$key)
+
+Resp$M = rep(0, nrow(Resp))
+Resp$S = rep(0, nrow(Resp))
+Resp$Cmin = rep(0, nrow(Resp))
+Resp$Cmax = rep(0, nrow(Resp))
+Resp$HDPImin = rep(0, nrow(Resp))
+Resp$HDPImax = rep(0, nrow(Resp))
+for (ii in 1:length(X)){
+  CoD = Resp %>% filter(key == X[ii])
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx =  Resp$key == X[ii]
+  Resp$M[Idx] = MCMCs$statistics[1,1]
+  Resp$S[Idx] = MCMCs$statistics[1,2]
+  Resp$Cmin[Idx] = MCMCs$quantiles[1,1]
+  Resp$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  Resp$HDPImin[Idx] = HDPI[1,1]
+  Resp$HDPImax[Idx] = HDPI[1,2]
+
+}
+
+# Regression Plots
+g2 = ggplot(Resp, aes(x = key, y = M, fill = key)) +
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .1, size = .75) +  
+  geom_point(size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) + 
+    ylab('Posterior means') + xlab('') + PltTheme + 
+    scale_y_continuous(expand = c(.0, .1), breaks = -1:5, limits = c(1, 3)) + 
+    theme( legend.direction = 'horizontal', 
+           legend.position = c(.5,-.23), 
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) + 
+  scale_x_discrete(labels=c('Better Lives','Next Gen'))
+  
+
+P = ggarrange(g, g2, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="none")
+P
+
+
+```
+
+
+## Immunity Passports
+Participants were asked their views on “immunity passports” which were explained as follows:
+
+"An 'immunity passport' indicates that you have had a disease and that you have antibodies to the virus that causes the disease. Having the antibodies means that you are now immune and therefore cannot spread the virus to other people. Therefore, if an antibody test indicates that you have had the disease, you could be given an 'immunity passport' that would later allow you to move freely. Immunity passports have been proposed as a potential step to lift movement restrictions during the COVID-19 pandemic."
+
+Participants then responded to the following items:
+
+  1. What support would you give to a government proposal to introduce ‘immunity passports’ for the new coronavirus (COVID-19)?
+  2. To what extent are you concerned about the idea of introducing an ‘immunity passport’ for the new coronavirus (COVID-19)?
+  3. To what extent would you like to receive an ‘immunity passport’ for the new coronavirus (COVID-19), regardless of whether you have actually had COVID-19 or not?
+  4. To what extent do you think that an ‘immunity passport’ for the new coronavirus (COVID-19) could damage the social fabric of your country?
+  5. To what extent do you think it is fair that people with ‘immunity passports’ for the new coronavirus (COVID-19) can return to work, while people without this ‘immunity passport’ cannot?
+
+```{r,fig.width = 8, fig.height= 6, fig.cap = "Figure 12. Perceptions of immunity passports. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+Data = SData$Data
+
+Resp = gather( Data %>%  select( ip_support1 : ip_fair ), factor_key = TRUE )
+
+g = ggplot(Resp, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white")) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:5, limits = c(1, 5), labels = c('None','Slight','Some','Very','Exteme')) + 
+  labs(title = 'Perceptions of Immunity Passports') + 
+  scale_x_discrete(labels=c('Support','Concern','Like','Harm','Fair'))
+
+X = unique(Resp$key)
+
+Resp$M = rep(0, nrow(Resp))
+Resp$S = rep(0, nrow(Resp))
+Resp$Cmin = rep(0, nrow(Resp))
+Resp$Cmax = rep(0, nrow(Resp))
+Resp$HDPImin = rep(0, nrow(Resp))
+Resp$HDPImax = rep(0, nrow(Resp))
+for (ii in 1:length(X)){
+  CoD = Resp %>% filter(key == X[ii])
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx =  Resp$key == X[ii]
+  Resp$M[Idx] = MCMCs$statistics[1,1]
+  Resp$S[Idx] = MCMCs$statistics[1,2]
+  Resp$Cmin[Idx] = MCMCs$quantiles[1,1]
+  Resp$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  Resp$HDPImin[Idx] = HDPI[1,1]
+  Resp$HDPImax[Idx] = HDPI[1,2]
+
+}
+
+# Regression Plots
+g2 = ggplot(Resp, aes(x = key, y = M, fill = key)) +
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .25, size = .75) +  
+  geom_point(size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) + 
+    ylab('Posterior means') + xlab('') + PltTheme + 
+    scale_y_continuous(expand = c(.0, .1), breaks = -1:5, limits = c(0, 1.3)) + 
+    theme( legend.direction = 'horizontal', 
+           legend.position = c(.5,-.23), 
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) + 
+  scale_x_discrete(labels=c('Support','Concern','Like','Harm','Fair'))
+  
+
+P = ggarrange(g, g2, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="none")
+P
+
+
+```
+
+The following table summarizes results for how much people supported the introduction of Immunity Passports: 27% of participants did not support immunity passports at all, and 19% showed a lot or full support. 
+
+```{r}
+ipcov <- apply_labels(SData$Data,ip_support1 = "Final support for Immunity Passports",
+                            ip_support1 = c("Not at all" = 1, "Slightly" = 2, "A bit" = 3, 
+                                            "Moderately" = 4, "A lot" = 5, "Fully" = 6))
+cro_tpct(ipcov$ip_support1)
+```
+
+Finally, participants were asked about their world views with three items assessing their libertarian attitudes. The following presents a composite measure of these world view items against a composite score of their perceived risk of COVID-19. World view items were:
+
+  1. An economic system based on the free market, without government interference, works best to meet the needs of citizens
+  2. The free market system may be efficient in locating resources, but it is limited in its ability to promote social justice.
+  3. The government should interfere as little as possible in the lives of citizens.
+
+```{r, fig.cap = "Figure 13. Worldview items vs. participant perceived risk from COVID-19."}
+Data = SData$Data
+ggplot(Data, aes(WorldView, COVIDrisk)) +
+  geom_point(size=1.5,shape = 21,fill="red",
+             position=position_jitter(width=0.15, height=0.15)) +
+  geom_smooth() +
+  theme(plot.title = element_text(size = 18),
+        panel.background = element_rect(fill = "white", colour = "grey50"),
+        text = element_text(size=14)) +
+  xlim(0.8,7.2) + ylim(0.8,5.2) +
+  labs(x="Worldview (libertarianism)", y="Perceived COVID risk")
+```
+
+```{r}
+cor.test (Data$WorldView,Data$COVIDrisk, use="pairwise.complete.obs")
+```
+
+
+## Perceptions about conspiracies
+
+Finally, participants were asked the following questions:
+
+  1. There are secret organizations that have great influence on political decisions [Organizations]
+  2. Most people do not see how much our lives are determined by plots hatched in secret [Plots]
+  3. There are certain political circles with secret agendas that are very influential [Politics]
+  4. I think that the various conspiracy theories circulating in the media are absolute nonsense [Nonsense; Reverse Scored]
+  5. Secret organizations can manipulate people psychologically so that they do not notice how their life is being controlled by others [Manipulation]
+
+
+```{r,fig.width = 8, fig.height= 6, fig.cap = "Figure 14. Perceptions of conspiracies. a) Likert-style responses, and b) Bayesian ordinal regression posterior distributions; error bars are 95% highest density intervals."}
+Data = SData$Data
+Data$Conspir_4_REV = revscore(Data$Conspir_4_REV, 7)
+
+Resp = gather( Data %>%  select( Conspir_1 : Conspir_5 ), factor_key = TRUE )
+
+g = ggplot(Resp, aes(x = key, y = value, fill = key)) +
+  geom_boxplot() + PltTheme  +
+  theme(   legend.position = 'none',
+           legend.key = element_rect(fill = "white")) + 
+  ylab('') + xlab('') + 
+  scale_y_continuous(expand = c(.0, .1), breaks = 1:7, limits = c(1, 7), labels = c('S.Disagree','Disagree','Somewhat.D','Neither','Somewhat.A', 'Agree', 'S.Agree')) + 
+  labs(title = 'Perceptions on conspiracies') + 
+  scale_x_discrete(labels=c('Organizations','Plots','Politics','Nonsense\n[R.Score]','Manipulation'))
+
+X = unique(Resp$key)
+
+Resp$M = rep(0, nrow(Resp))
+Resp$S = rep(0, nrow(Resp))
+Resp$Cmin = rep(0, nrow(Resp))
+Resp$Cmax = rep(0, nrow(Resp))
+Resp$HDPImin = rep(0, nrow(Resp))
+Resp$HDPImax = rep(0, nrow(Resp))
+for (ii in 1:length(X)){
+  CoD = Resp %>% filter(key == X[ii])
+
+  MCMCd = MCMCoprobit(as.formula('value ~ 1'), data = CoD, tune=0.3, mcmc=20000)
+  MCMCs = summary(MCMCd)
+  Idx =  Resp$key == X[ii]
+  Resp$M[Idx] = MCMCs$statistics[1,1]
+  Resp$S[Idx] = MCMCs$statistics[1,2]
+  Resp$Cmin[Idx] = MCMCs$quantiles[1,1]
+  Resp$Cmax[Idx] = MCMCs$quantiles[1,5]
+  HDPI = HPDinterval(MCMCd)
+  Resp$HDPImin[Idx] = HDPI[1,1]
+  Resp$HDPImax[Idx] = HDPI[1,2]
+
+}
+
+# Regression Plots
+g2 = ggplot(Resp, aes(x = key, y = M, fill = key)) +
+  geom_errorbar(aes(ymin = HDPImin, ymax = HDPImax, x = key),
+                  position = position_dodge(.75), width = .25, size = .75) +  
+  geom_point(size = 5, shape = 22, stroke = 0, position = position_dodge(.75)) + 
+    ylab('Posterior means') + xlab('') + PltTheme + 
+    scale_y_continuous(expand = c(.0, .1), breaks = -1:5, limits = c(.5, 2.2)) + 
+    theme( legend.direction = 'horizontal', 
+           legend.position = c(.5,-.23), 
+           plot.margin=unit(c(0,0,0,1),"cm"),
+           legend.text=element_text(size=14, face = 'bold'),
+           legend.key.size = unit(2,"line"),
+           legend.key = element_rect(fill = "white")) + 
+  scale_x_discrete(labels=c('Organizations','Plots','Politics','Nonsense\n[R.Score]','Manipulation'))
+  
+
+P = ggarrange(g, g2, ncol = 1, nrow = 2, labels = c('a)','b)'),common.legend = TRUE, legend="none")
+P
+
+
+```
