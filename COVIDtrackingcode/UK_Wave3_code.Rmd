@@ -35,7 +35,7 @@ PrimeCols = WaveCols
 
 ```
 
-The following provides a snapshot of the results from the thrid wave of data collected in the UK for the project 'establishing the social licence for tracking technologies'. Data was collected from August 10th - August 11th 2020. 
+The following provides a snapshot of the results from the thrid wave of data collected in the UK for the project 'establishing the social licence for tracking technologies'. Data was collected from August 10th - August 11th 2020. Click here to get the [code](https://github.com/paulgarrettphd/Site/blob/master/COVIDtrackingcode/UK_Wave3_code.Rmd) and [functions](https://github.com/paulgarrettphd/Site/blob/master/COVIDtrackingcode/Functions.R) for this analysis, or click to see the [international results](https://stephanlewandowsky.github.io/UKsocialLicence/).
 
 # Background
 
